@@ -10,6 +10,10 @@ class MyTestCase(unittest.TestCase):
         p = mathUtils.support(shape1, shape2, vector)
         expected = 0, -1
         self.assertEqual(expected, p)
+        shape3 = [(-1, -1), (1, 0), (0, 1)]
+        p2 = 0, 0
+        is_in = mathUtils.point_in_triangle(shape3, p2)
+        self.assertEqual(True, is_in)
 
 
 if __name__ == '__main__':
