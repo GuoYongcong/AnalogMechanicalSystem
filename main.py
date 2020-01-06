@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
 import pygame as pg
-from random import randint
-import ball
+from shape import ball, rectangle, line, triangle
 from pygame.locals import *
 import game_functions as gf
 import game_settings as gs
-from button import Button
-import slider
-import line
-import rectangle
+from control.button import Button
+from control import slider
 
 
 def run_game():
@@ -25,7 +22,7 @@ def run_game():
                   gs.SIZE[1] / 2 - button_size[1])
     button_color = (255, 140, 0)
     text = "添加"
-    font_size = 18
+    font_size = 30
     text_color = (255, 255, 255)
     button_add = Button(game_surface, button_size,
                         button_color, button_pos, text, font_size, text_color)
@@ -56,6 +53,7 @@ def run_game():
     max_value = 100
     value = max_value / 2
     slider_color = Color('red')
+    font_size = 18
     rect_1 = Rect(0, 0, 20, 100)
     rect_1.center = button_pos[0], round(gs.SIZE[1] / 6)
     slider_1 = slider.Slider(
@@ -149,7 +147,9 @@ def run_game():
     color = pg.Color('black')
     free_object_2 = ball.Ball(game_surface, pos, m, v, color, True)
     free_objects.append(free_object_2)
-
+    points = [(50,10), (50,110),(110,110)]
+    free_object_3 = triangle.Triangle(game_surface, points, color, cof, True)
+    free_objects.append(free_object_3)
     game_active = False
     while True:
         gf.update(game_surface, game_active, balls,

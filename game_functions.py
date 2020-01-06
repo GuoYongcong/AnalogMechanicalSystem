@@ -2,14 +2,11 @@
 import pygame as pg
 import math
 import sys
-import ball
+from shape import ball, force
 import game_settings as gs
-from button import Button
 from random import randint
-import slider
-import line
-import force
-import contact_utils
+from utils import contact_utils
+
 FPSClock = pg.time.Clock()  # 创建Clock对象
 object_selected = None  # 当前选中的自由物体
 sum_of_forces = 0  # 添加的力的总数

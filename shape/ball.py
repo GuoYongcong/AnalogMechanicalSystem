@@ -3,7 +3,8 @@ import pygame as pg
 import math
 from pygame.locals import *
 import game_settings as gs
-import mathUtils
+from utils import math_utils
+
 RADIUS = 50  # 半径
 
 
@@ -40,7 +41,7 @@ class Ball:
         pg.draw.circle(
             self.game_surface, self.color, self.pos, self.r)
         start_pos = self.pos
-        end_pos = mathUtils.rotate_point(start_pos, (0, self.r), self.angle)
+        end_pos = math_utils.rotate_point(start_pos, (0, self.r), self.angle)
         width = 1
         pg.draw.line(
             self.game_surface,

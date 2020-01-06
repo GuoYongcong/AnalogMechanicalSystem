@@ -1,4 +1,3 @@
-from button import Button
 import pygame as pg
 import game_settings as gs
 import copy

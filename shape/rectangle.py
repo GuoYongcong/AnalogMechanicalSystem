@@ -1,11 +1,6 @@
 # -*- coding:utf-8 -*-
 import pygame as pg
-from pygame.locals import *
-import math
-import game_settings as gs
-import force
-import game_functions as gf
-import mathUtils
+from utils import math_utils
 
 
 class Rectangle:
@@ -33,9 +28,11 @@ class Rectangle:
         # self.draw()
 
     def check_click_left(self, mouse_pos, mouse_buttons):
+        """检测是否点击了鼠标左键"""
         return mouse_buttons[0] and self.rect.collidepoint(mouse_pos)
 
     def check_click_right(self, mouse_pos, mouse_buttons):
+        """检测是否点击了鼠标右键"""
         return mouse_buttons[2] and self.rect.collidepoint(mouse_pos)
 
     def is_selected(self, color, width):
@@ -63,9 +60,9 @@ class Rectangle:
         tr = width, height
         tl = 0, height
 
-        br = mathUtils.rotate_point(bl, br, self.angle)
-        tr = mathUtils.rotate_point(bl, tr, self.angle)
-        tl = mathUtils.rotate_point(bl, tl, self.angle)
+        br = math_utils.rotate_point(bl, br, self.angle)
+        tr = math_utils.rotate_point(bl, tr, self.angle)
+        tl = math_utils.rotate_point(bl, tl, self.angle)
         points = [bl, br, tr, tl]
 
         pg.draw.polygon(

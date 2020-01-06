@@ -1,8 +1,7 @@
 import math
-from ball import Ball
-from rectangle import Rectangle
-import mathUtils
-from pygame.locals import Rect
+from shape.ball import Ball
+from shape.rectangle import Rectangle
+from utils import math_utils
 
 
 def contact_test(shape1, shape2):
@@ -86,7 +85,7 @@ def ball_contact_rectangle(ball, rect):
         closest_y = ball_pos[1]
         dy1 = 0
         dy2 = 0
-    distance = mathUtils.distance_of_two_points(
+    distance = math_utils.distance_of_two_points(
         ball_pos, (closest_x, closest_y))
     # 判断矩形上距离圆形的最近点与圆心的距离是否小于圆的半径
     if distance < ball.r:
@@ -109,11 +108,11 @@ def rectangle_contact_rectangle(rect1, rect2):
 
 def dx_two_points(p1, p2, s):
     """参数s表示修正后两点的距离"""
-    ds = s - mathUtils.distance_of_two_points(p1, p2)
+    ds = s - math_utils.distance_of_two_points(p1, p2)
     return ds * math.fabs(p1[0] - p2[0]) / s
 
 
 def dy_two_points(p1, p2, s):
     """参数s表示修正后两点的距离"""
-    ds = s - mathUtils.distance_of_two_points(p1, p2)
+    ds = s - math_utils.distance_of_two_points(p1, p2)
     return ds * math.fabs(p1[1] - p2[1]) / s
