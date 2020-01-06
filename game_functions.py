@@ -215,6 +215,9 @@ def update(game_surface, game_active, balls, buttons,
             for other_object in free_objects:
                 if other_object is not free_object:
                     contact_utils.contact_test(other_object, free_object)
+            # 跟其他固定物体进行碰撞检测
+            for fixed_object in fixed_objects:
+                contact_utils.contact_test(free_object, fixed_object)
             free_object.is_hit_the_edge(
                 (gs.SIZE[0] - gs.MENU_SIZE[0], gs.SIZE[1] * 7 / 8))
             free_object.draw_force(pg.Color('red'))

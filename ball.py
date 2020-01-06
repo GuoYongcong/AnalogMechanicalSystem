@@ -40,8 +40,7 @@ class Ball:
         pg.draw.circle(
             self.game_surface, self.color, self.pos, self.r)
         start_pos = self.pos
-        end_pos = mathUtils.rotate_point(0, self.r, self.angle)
-        end_pos = self.pos[0] + end_pos[0], self.pos[1] - end_pos[1]
+        end_pos = mathUtils.rotate_point(start_pos, (0, self.r), self.angle)
         width = 1
         pg.draw.line(
             self.game_surface,
@@ -87,6 +86,8 @@ class Ball:
         for i in range(0, 2):
             if self.pos[i] <= self.r or self.pos[i] + self.r >= size[i]:
                 # 如果小球碰到界面的左边或右边，则x轴方向的速度大小不变，方向相反；上边或下边则是y轴
+                self.v = (value[i] * self.v[0], value[1 - i] * self.v[1])
+
                 flag = True
                 temp = 0
                 d_value = 0
@@ -109,7 +110,6 @@ class Ball:
                     for force in self.forces:
                         pos = force.get_pos()
                         force.set_pos(pos[0], pos[1] + d_value)
-                self.v = (value[i] * self.v[0], value[1 - i] * self.v[1])
         return flag
 
     # 判断两个小球是否相撞

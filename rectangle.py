@@ -55,21 +55,18 @@ class Rectangle:
         return False
 
     def rotate(self):
-        self.angle += 1
-        width, height = self.rect.size
-        BL = self.rect.bottomleft
-        BR = width, 0
-        TR = width, height
-        TL = 0, height
+        self.angle = (self.angle - 1)%360
 
-        BR = mathUtils.rotate_point(BR[0], BR[1], self.angle)
-        TR = mathUtils.rotate_point(TR[0], TR[1], self.angle)
-        TL = mathUtils.rotate_point(TL[0], TL[1], self.angle)
-        points = []
-        points.append(BL)
-        points.append((BL[0] + BR[0], BL[1] - BR[1]))
-        points.append((BL[0] + TR[0], BL[1] - TR[1]))
-        points.append((BL[0] + TL[0], BL[1] - TL[1]))
+        width, height = self.rect.size
+        bl = self.rect.bottomleft
+        br = width, 0
+        tr = width, height
+        tl = 0, height
+
+        br = mathUtils.rotate_point(bl, br, self.angle)
+        tr = mathUtils.rotate_point(bl, tr, self.angle)
+        tl = mathUtils.rotate_point(bl, tl, self.angle)
+        points = [bl, br, tr, tl]
 
         pg.draw.polygon(
             self.surface, self.color, points)

@@ -134,7 +134,7 @@ def run_game():
     width = gs.SIZE[0] / 5
     height = gs.SIZE[1] / 8
     left = width
-    top = fixed_object_1.rect.top - height
+    top = gs.SIZE[1] / 2 - height
     rect = Rect(left, top, width, height)
     color = Color('black')
     cof = 0.5
@@ -149,9 +149,6 @@ def run_game():
     color = pg.Color('black')
     free_object_2 = ball.Ball(game_surface, pos, m, v, color, True)
     free_objects.append(free_object_2)
-    pos = pos[0], round(pos[1]/2)
-    free_object_3 = ball.Ball(game_surface, pos, m, v, color, True)
-    free_objects.append(free_object_3)
 
     game_active = False
     while True:

@@ -1,11 +1,12 @@
 import math
 
 
-def rotate_point(x, y, angle):
+def rotate_point(fixed_point, end_point, angle):
     angle = math.radians(angle)
-    x1 = x * math.cos(angle) - y * math.sin(angle)
-    y1 = x * math.sin(angle) + y * math.cos(angle)
-    return round(x1), round(y1)
+    x1 = end_point[0] * math.cos(angle) - end_point[1] * math.sin(angle)
+    y1 = end_point[0] * math.sin(angle) + end_point[1] * math.cos(angle)
+
+    return round(fixed_point[0] + x1), round(fixed_point[1] - y1)
 
 
 def support(shape1, shape2, vector):
@@ -69,7 +70,7 @@ def two_shapes_intersect(shape1, shape2):
 
 def distance_of_two_points(point_a, point_b):
     x = point_a[0] - point_b[0]
-    y = point_b[1] - point_b[1]
+    y = point_a[1] - point_b[1]
     distance = math.sqrt(x**2 + y**2)
     return distance
 
