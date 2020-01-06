@@ -9,23 +9,24 @@ RADIUS = 50  # 半径
 
 class Ball:
 
-    def __init__(self, game_surface, pos, m, v, color):
+    def __init__(self, game_surface, pos, m, v, color, is_free=True):
         self.pos = pos  # 球心的位置，例如(0,0)表示在界面左上角
         self.m = m  # 质量
         self.r = RADIUS  # 半径
         self.v = v  # v=(v_x, v_y), v_x, v_y分别表示x,y轴方向的速度，正数分别表示速向右，向下
         self.color = color  # 颜色
         self.game_surface = game_surface  # 界面
-        self.flag = False
         self.forces = []
         self.a = (0, gs.g)
         self.angle = 0
+        self.is_free = is_free
 
     def move(self):
         # 计算加速度
         self.a = (0, gs.g)
         for f in self.forces:
-            self.a = self.a[0] + round(f.get_f()[0] / self.m), self.a[1] + round(f.get_f()[1] / self.m)
+            self.a = self.a[0] + round(f.get_f()[0] / \
+                                       self.m), self.a[1] + round(f.get_f()[1] / self.m)
         # 计算速度
         self.v = self.v[0] + self.a[0], self.v[1] + self.a[1]
         # 计算位置
@@ -42,7 +43,12 @@ class Ball:
         end_pos = mathUtils.rotate_point(0, self.r, self.angle)
         end_pos = self.pos[0] + end_pos[0], self.pos[1] - end_pos[1]
         width = 1
-        pg.draw.line(self.game_surface, Color('white'), start_pos, end_pos, width)
+        pg.draw.line(
+            self.game_surface,
+            Color('white'),
+            start_pos,
+            end_pos,
+            width)
 
     def move_and_draw(self):
         self.rotate()
@@ -128,14 +134,6 @@ class Ball:
             return True
         else:
             return False
-
-    def is_decreased_half_in_speed(self, line_x):
-        if self.pos[0] + self.r >= line_x >= self.pos[0] - self.r:
-            if self.v[0] > 0 and self.flag is False:
-                self.v = (round(self.v[0] / 2), round(self.v[1] / 2))
-                self.flag = True
-            elif self.v[0] < 0 and self.flag is True:
-                self.flag = False
 
     def rotate(self):
         self.angle = (self.angle + 5) % 360

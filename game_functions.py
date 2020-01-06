@@ -9,7 +9,7 @@ from random import randint
 import slider
 import line
 import force
-
+import contact_utils
 FPSClock = pg.time.Clock()  # 创建Clock对象
 object_selected = None  # 当前选中的自由物体
 sum_of_forces = 0  # 添加的力的总数
@@ -211,6 +211,10 @@ def update(game_surface, game_active, balls, buttons,
 
         for free_object in free_objects:
             free_object.move_and_draw()
+            # 跟其他自由物体进行碰撞检测
+            for other_object in free_objects:
+                if other_object is not free_object:
+                    contact_utils.contact_test(other_object, free_object)
             free_object.is_hit_the_edge(
                 (gs.SIZE[0] - gs.MENU_SIZE[0], gs.SIZE[1] * 7 / 8))
             free_object.draw_force(pg.Color('red'))
@@ -278,8 +282,4 @@ def display_number_of_force(game_surface, free_objects):
     display_text(game_surface, text, pg.Color('red'), 27, (800, 150))
 
 
-def distance_of_two_points(pointA, pointB):
-    x = pointA[0] - pointB[0]
-    y = pointB[1] - pointB[1]
-    distance = math.sqrt(x**2 + y**2)
-    return distance
+

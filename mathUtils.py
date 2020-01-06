@@ -13,12 +13,13 @@ def support(shape1, shape2, vector):
     p1 = get_farthest_point_in_direction(shape1, vector)
     n_vector = -vector[0], -vector[1]
     p2 = get_farthest_point_in_direction(shape2, n_vector)
-    return p1[0]-p2[0], p1[1] - p2[1]
+    return p1[0] - p2[0], p1[1] - p2[1]
 
 
 def get_farthest_point_in_direction(shape, vector):
     """某个方向上选择最远的点"""
-    max_value_point = shape[0][0]*vector[0] + shape[0][1]*vector[1], shape[0]
+    max_value_point = shape[0][0] * vector[0] + \
+        shape[0][1] * vector[1], shape[0]
     for p in shape:
         value = p[0] * vector[0] + p[1] * vector[1]
         if value > max_value_point[0]:
@@ -36,7 +37,7 @@ def point_in_triangle(triangle, point):
     dot13 = dot_op(p1, p3)
     dot22 = dot_op(p2, p2)
     dot23 = dot_op(p2, p3)
-    temp = 1/(dot11 * dot22 - dot12 * dot12)
+    temp = 1 / (dot11 * dot22 - dot12 * dot12)
     u = (dot22 * dot13 - dot12 * dot23) * temp
     if u < 0 or u > 1:
         return False
@@ -56,5 +57,20 @@ def dot_op(vector1, vector2):
 def sub_op(vector1, vector2):
     vector = []
     for i in range(len(vector1)):
-        vector.append(vector1[i]-vector2[i])
+        vector.append(vector1[i] - vector2[i])
     return tuple(vector)
+
+
+def two_shapes_intersect(shape1, shape2):
+    """判断两个凸多边形四是否相交"""
+
+    return False
+
+
+def distance_of_two_points(point_a, point_b):
+    x = point_a[0] - point_b[0]
+    y = point_b[1] - point_b[1]
+    distance = math.sqrt(x**2 + y**2)
+    return distance
+
+

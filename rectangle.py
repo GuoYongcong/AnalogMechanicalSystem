@@ -7,9 +7,10 @@ import force
 import game_functions as gf
 import mathUtils
 
+
 class Rectangle:
 
-    def __init__(self, surface, rect, color, cof, G):
+    def __init__(self, surface, rect, color, cof, G, is_free=True):
         self.surface = surface
         self.rect = rect
         self.color = color
@@ -18,6 +19,7 @@ class Rectangle:
         self.forces = []
         self.rect_2 = None
         self.angle = 0
+        self.is_free = is_free
 
     def move(self):
         self.rotate()
@@ -72,4 +74,5 @@ class Rectangle:
         pg.draw.polygon(
             self.surface, self.color, points)
 
-
+    def set_rect(self, rect):
+        self.rect = rect

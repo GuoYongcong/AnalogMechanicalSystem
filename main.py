@@ -127,7 +127,7 @@ def run_game():
     cof = 0.5
     G = 50
     fixed_object_1 = rectangle.Rectangle(
-        game_surface, rect, color, cof, G)
+        game_surface, rect, color, cof, G, False)
     fixed_objects.append(fixed_object_1)
 
     # 定义自由物体
@@ -140,15 +140,18 @@ def run_game():
     cof = 0.5
     G = 100
     free_object_1 = rectangle.Rectangle(
-        game_surface, rect, color, cof, G)
+        game_surface, rect, color, cof, G, True)
     free_objects.append(free_object_1)
 
     pos = (round(gs.SIZE[0] / 2), round(gs.SIZE[1] / 2))
     v = (0, 0)
     m = 5
     color = pg.Color('black')
-    free_object_2 = ball.Ball(game_surface, pos, m, v, color)
+    free_object_2 = ball.Ball(game_surface, pos, m, v, color, True)
     free_objects.append(free_object_2)
+    pos = pos[0], round(pos[1]/2)
+    free_object_3 = ball.Ball(game_surface, pos, m, v, color, True)
+    free_objects.append(free_object_3)
 
     game_active = False
     while True:
