@@ -146,7 +146,7 @@ def ball_contact_triangle(ball, triangle):
         new_v = math_utils.rotate_vector(ball.v, degrees)
         # 假定碰撞后动能损失一半
         times = math.sqrt(1 / 2)
-        new_v = math_utils.times(new_v, 1 / 2)
+        new_v = math_utils.times(new_v, times)
         ball.v = round(new_v[0]), round(new_v[1])
         if min_d > 0:
             closest_point_to_ball_pos = math_utils.sub_op(ball.pos, closest_point)

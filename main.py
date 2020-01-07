@@ -141,14 +141,15 @@ def run_game():
         game_surface, rect, color, cof, G, True)
     free_objects.append(free_object_1)
 
-    pos = (round(gs.SIZE[0] / 2), round(gs.SIZE[1] / 2))
+    pos = (round(gs.SIZE[0] / 2) + 80, round(gs.SIZE[1] / 2))
     v = (0, 0)
     m = 5
     color = pg.Color('black')
     free_object_2 = ball.Ball(game_surface, pos, m, v, color, True)
     free_objects.append(free_object_2)
     color = pg.Color('white')
-    points = [(pos[0]-50,pos[1]+220), (pos[0]+150,pos[1]+220),(pos[0]+50,pos[1]+50)]
+    pos =round(gs.SIZE[0] / 2), round(gs.SIZE[1] / 2)+220
+    points = [(pos[0]-50,pos[1]), (pos[0]+150,pos[1]),(pos[0]+100,pos[1]-150)]
     fixed_object_2 = triangle.Triangle(game_surface, points, color, cof, True)
     fixed_objects.append(fixed_object_2)
     game_active = False
