@@ -60,9 +60,9 @@ class Rectangle:
         tr = width, height
         tl = 0, height
 
-        br = math_utils.rotate_point(bl, br, self.angle)
-        tr = math_utils.rotate_point(bl, tr, self.angle)
-        tl = math_utils.rotate_point(bl, tl, self.angle)
+        br = math_utils.rotate_point_in_pygame(bl, br, self.angle)
+        tr = math_utils.rotate_point_in_pygame(bl, tr, self.angle)
+        tl = math_utils.rotate_point_in_pygame(bl, tl, self.angle)
         points = [bl, br, tr, tl]
 
         pg.draw.polygon(

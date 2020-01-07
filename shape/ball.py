@@ -26,7 +26,7 @@ class Ball:
         # 计算加速度
         self.a = (0, gs.g)
         for f in self.forces:
-            self.a = self.a[0] + round(f.get_f()[0] / \
+            self.a = self.a[0] + round(f.get_f()[0] /
                                        self.m), self.a[1] + round(f.get_f()[1] / self.m)
         # 计算速度
         self.v = self.v[0] + self.a[0], self.v[1] + self.a[1]
@@ -41,7 +41,7 @@ class Ball:
         pg.draw.circle(
             self.game_surface, self.color, self.pos, self.r)
         start_pos = self.pos
-        end_pos = math_utils.rotate_point(
+        end_pos = math_utils.rotate_point_in_pygame(
             start_pos, (0, self.r), self.rotating_degrees)
         width = 1
         pg.draw.line(
@@ -88,7 +88,9 @@ class Ball:
         for i in range(0, 2):
             if self.pos[i] <= self.r or self.pos[i] + self.r >= size[i]:
                 # 如果小球碰到界面的左边或右边，则x轴方向的速度大小不变，方向相反；上边或下边则是y轴
-                self.v = (value[i] * self.v[0], value[1 - i] * self.v[1])
+                # 假定碰撞后动能损失一半
+                self.v = (round(value[i] * self.v[0] / math.sqrt(2)),
+                          round(value[1 - i] * self.v[1] / math.sqrt(2)))
 
                 flag = True
                 temp = 0

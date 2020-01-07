@@ -1,7 +1,7 @@
 import math
 
 
-def rotate_point(fixed_point, end_point, angle):
+def rotate_point_in_pygame(fixed_point, end_point, angle):
     angle = math.radians(angle)
     x1 = end_point[0] * math.cos(angle) - end_point[1] * math.sin(angle)
     y1 = end_point[0] * math.sin(angle) + end_point[1] * math.cos(angle)
@@ -94,3 +94,10 @@ def distance_of_two_points(point_a, point_b):
     y = point_a[1] - point_b[1]
     distance = math.sqrt(x**2 + y**2)
     return distance
+
+
+def rotate_vector(vector, degrees):
+    radians = math.radians(degrees)
+    x1 = vector[0] * math.cos(radians) - vector[1] * math.sin(radians)
+    y1 = vector[0] * math.sin(radians) + vector[1] * math.cos(radians)
+    return round(x1), round(y1)

@@ -105,11 +105,14 @@ def ball_contact_rectangle(ball, rect):
 
 
 def ball_contact_triangle(ball, triangle):
+    min_d = ball.r  # 三角形边距离圆心最近的距离
+    closest_point = None  # 三角形边上距离圆心最近的点
+    closest_border = []
     for k in range(3):
         a = triangle.points[k]
         b = triangle.points[(k + 1) % 3]
         c = ball.pos
-        #   找三角形边上距离圆形最近的点p
+        #   找三角形边上距离圆心最近的点p
         ab = math_utils.sub_op(b, a)
         ac = math_utils.sub_op(c, a)
         ac_len = math_utils.v_len(ac)
@@ -126,9 +129,32 @@ def ball_contact_triangle(ball, triangle):
             times = ap_len / ab_len
             ap = math_utils.times(ab, times)
             p = math_utils.add_op(a, ap)
-        if math_utils.distance_of_two_points(p, c) < ball.r:
-            #   圆形与三角形的一条边相交
-            pg.draw.line(ball.game_surface, pg.Color('red'), a, b, 5)
+        d = math_utils.distance_of_two_points(p, c)
+        if d < min_d:
+            min_d = d
+            closest_point = p
+            closest_border.clear()
+            closest_border.append(a)
+            closest_border.append(b)
+    if min_d < ball.r:
+        # 小球反弹
+        v_degrees = ball.get_v_degrees()
+        dy = math.fabs(closest_border[0][1] - closest_border[1][1])
+        dx = math.fabs(closest_border[0][0] - closest_border[1][0])
+        angle = math.degrees(math.atan2(dy, dx))
+        degrees = 2 * (180 - v_degrees - angle)
+        new_v = math_utils.rotate_vector(ball.v, degrees)
+        # 假定碰撞后动能损失一半
+        times = math.sqrt(1 / 2)
+        new_v = math_utils.times(new_v, 1 / 2)
+        ball.v = round(new_v[0]), round(new_v[1])
+        if min_d > 0:
+            closest_point_to_ball_pos = math_utils.sub_op(ball.pos, closest_point)
+            pos_to_new_pos = math_utils.times(
+                closest_point_to_ball_pos,
+                (ball.r - min_d) / min_d)
+            new_pos = math_utils.add_op(pos_to_new_pos, ball.pos)
+            ball.pos = round(new_pos[0]), round(new_pos[1])
 
 
 def rectangle_contact_rectangle(rect1, rect2):
