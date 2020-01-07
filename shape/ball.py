@@ -19,7 +19,7 @@ class Ball:
         self.game_surface = game_surface  # 界面
         self.forces = []
         self.a = (0, gs.g)
-        self.angle = 0
+        self.rotating_degrees = 0  # 小球旋转的角度数，逆时针为正
         self.is_free = is_free
 
     def move(self):
@@ -41,7 +41,8 @@ class Ball:
         pg.draw.circle(
             self.game_surface, self.color, self.pos, self.r)
         start_pos = self.pos
-        end_pos = math_utils.rotate_point(start_pos, (0, self.r), self.angle)
+        end_pos = math_utils.rotate_point(
+            start_pos, (0, self.r), self.rotating_degrees)
         width = 1
         pg.draw.line(
             self.game_surface,
@@ -137,4 +138,7 @@ class Ball:
             return False
 
     def rotate(self):
-        self.angle = (self.angle + 5) % 360
+        self.rotating_degrees = (self.rotating_degrees - 5) % 360
+
+    def get_v_degrees(self):
+        return math.degrees(math.atan2(self.v[1], self.v[0]))

@@ -105,10 +105,30 @@ def ball_contact_rectangle(ball, rect):
 
 
 def ball_contact_triangle(ball, triangle):
-    for i in range(3):
-        a = triangle.points[i]
-        b = triangle.points[(i + 1) % 3]
-        #   找三角形上面距离圆形最近的点
+    for k in range(3):
+        a = triangle.points[k]
+        b = triangle.points[(k + 1) % 3]
+        c = ball.pos
+        #   找三角形边上距离圆形最近的点p
+        ab = math_utils.sub_op(b, a)
+        ac = math_utils.sub_op(c, a)
+        ac_len = math_utils.v_len(ac)
+        ab_len = math_utils.v_len(ab)
+        if ac_len > 0:
+            ap_len = math_utils.dot_op(ac, ab) / ab_len
+        else:
+            ap_len = 0
+        if ap_len <= 0:
+            p = a
+        elif ap_len >= ab_len:
+            p = b
+        else:
+            times = ap_len / ab_len
+            ap = math_utils.times(ab, times)
+            p = math_utils.add_op(a, ap)
+        if math_utils.distance_of_two_points(p, c) < ball.r:
+            #   圆形与三角形的一条边相交
+            pg.draw.line(ball.game_surface, pg.Color('red'), a, b, 5)
 
 
 def rectangle_contact_rectangle(rect1, rect2):

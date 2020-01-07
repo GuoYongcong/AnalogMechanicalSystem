@@ -201,6 +201,20 @@ def draw_direction(ball, sliders):
 def update(game_surface, game_active, balls, buttons,
            sliders, lines, fixed_objects, free_objects):
     game_surface.fill(gs.BG_COLOR)  # 设置游戏界面的背景色，相当于清屏
+    # 刷新菜单界面
+    game_surface.fill(gs.BG_COLOR, pg.Rect(
+        (gs.SIZE[0] - gs.MENU_SIZE[0], 0), gs.MENU_SIZE))
+    for button in buttons:
+        button.draw()
+    for slider in sliders:
+        slider.draw()
+    for line in lines:
+        line.draw()
+    for fixed_object in fixed_objects:
+        fixed_object.draw()
+
+    display_game_active(game_surface, game_active)
+    display_number_of_force(game_surface, free_objects)
     if game_active:
 
         width = 5
@@ -224,30 +238,16 @@ def update(game_surface, game_active, balls, buttons,
         for free_object in free_objects:
             free_object.draw()
             free_object.draw_force(pg.Color('red'))
-
-    # 刷新菜单界面
-    game_surface.fill(gs.BG_COLOR, pg.Rect(
-        (gs.SIZE[0] - gs.MENU_SIZE[0], 0), gs.MENU_SIZE))
-    for button in buttons:
-        button.draw()
-    for slider in sliders:
-        slider.draw()
-    for line in lines:
-        line.draw()
-    for fixed_object in fixed_objects:
-        fixed_object.draw()
-
     if object_selected is not None:
         object_selected.is_selected(
             pg.Color('green'), 2)
-    if None != force_selected:
+    if force_selected is not None:
         if force_selected in object_selected.forces:
             force_selected.draw(pg.Color('green'))
         else:
             global force_selected
             force_selected = None
-    display_game_active(game_surface, game_active)
-    display_number_of_force(game_surface, free_objects)
+
     pg.display.flip()  # 把画的东西显示出来
     FPSClock.tick(gs.FPS)
 

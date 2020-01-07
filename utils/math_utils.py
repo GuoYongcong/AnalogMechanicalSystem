@@ -55,6 +55,13 @@ def dot_op(vector1, vector2):
     return result
 
 
+def add_op(vector1, vector2):
+    vector = []
+    for i in range(len(vector1)):
+        vector.append(vector1[i] + vector2[i])
+    return tuple(vector)
+
+
 def sub_op(vector1, vector2):
     vector = []
     for i in range(len(vector1)):
@@ -63,7 +70,17 @@ def sub_op(vector1, vector2):
 
 
 def v_len(vector):
-    return math.sqrt(vector[0]**2 + vector[1]**2)
+    length = 0
+    for v in vector:
+        length += v**2
+    return math.sqrt(length)
+
+
+def times(vector, t):
+    new_vector = []
+    for v in vector:
+        new_vector.append(v * t)
+    return tuple(new_vector)
 
 
 def two_shapes_intersect(shape1, shape2):
@@ -77,5 +94,3 @@ def distance_of_two_points(point_a, point_b):
     y = point_a[1] - point_b[1]
     distance = math.sqrt(x**2 + y**2)
     return distance
-
-
