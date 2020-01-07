@@ -1,7 +1,9 @@
 import math
 from shape.ball import Ball
 from shape.rectangle import Rectangle
+from shape.triangle import Triangle
 from utils import math_utils
+import pygame as pg
 
 
 def contact_test(shape1, shape2):
@@ -15,6 +17,8 @@ def contact_test(shape1, shape2):
             ball_contact_ball(shape1, shape2)
         elif isinstance(shape2, Rectangle):
             ball_contact_rectangle(shape1, shape2)
+        elif isinstance(shape2, Triangle):
+            ball_contact_triangle(shape1, shape2)
     elif isinstance(shape1, Rectangle):
         if isinstance(shape2, Ball):
             ball_contact_rectangle(shape2, shape1)
@@ -23,7 +27,6 @@ def contact_test(shape1, shape2):
 
 
 def ball_contact_ball(ball1, ball2):
-
     x = ball1.pos[0] - ball2.pos[0]
     y = ball1.pos[1] - ball2.pos[1]
     distance = math.sqrt(x ** 2 + y ** 2)
@@ -99,6 +102,13 @@ def ball_contact_rectangle(ball, rect):
         dy2 = dy2 * dy
         # ball.pos = ball.pos[0] + dx1, ball.pos[1] + dy1
         # rect.rect = rect.rect.move(dx2, dy2)
+
+
+def ball_contact_triangle(ball, triangle):
+    for i in range(3):
+        a = triangle.points[i]
+        b = triangle.points[(i + 1) % 3]
+        #   找三角形上面距离圆形最近的点
 
 
 def rectangle_contact_rectangle(rect1, rect2):

@@ -62,6 +62,10 @@ def sub_op(vector1, vector2):
     return tuple(vector)
 
 
+def v_len(vector):
+    return math.sqrt(vector[0]**2 + vector[1]**2)
+
+
 def two_shapes_intersect(shape1, shape2):
     """判断两个凸多边形四是否相交"""
 

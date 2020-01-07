@@ -34,7 +34,7 @@ def check_event(game_surface, game_active, balls,
     return game_active
 
 
-def click_button_add(game_surface,  game_active,
+def click_button_add(game_surface, game_active,
                      button_clicked, sliders, free_objects):
     if not game_active and None != object_selected:
         f = add_force(game_surface, sliders, free_objects)
@@ -46,9 +46,9 @@ def click_button_add(game_surface,  game_active,
     return game_active
 
 
-def click_button_undo(game_surface,  game_active,
+def click_button_undo(game_surface, game_active,
                       button_clicked, sliders, free_objects):
-    if None != force_selected:
+    if force_selected is not None:
         object_selected.forces.remove(force_selected)
         global force_selected
         force_selected = None
@@ -57,7 +57,7 @@ def click_button_undo(game_surface,  game_active,
     return game_active
 
 
-def click_button_launch(game_surface,  game_active,
+def click_button_launch(game_surface, game_active,
                         button_clicked, sliders, free_objects):
     button_clicked.set_text('暂停')
     global force_selected
@@ -68,11 +68,12 @@ def click_button_launch(game_surface,  game_active,
     return game_active
 
 
-def click_button_pause(game_surface,  game_active,
+def click_button_pause(game_surface, game_active,
                        button_clicked, sliders, free_objects):
     button_clicked.set_text('启动')
     game_active = False
     return game_active
+
 
 # click_button_events:全局变量
 click_button_events = {'添加': click_button_add,
@@ -94,12 +95,13 @@ def set_angle_of_force(slider, free_objects):
 def set_pos_of_force(mouse_pos, free_objects):
     force_selected.set_f('pos', mouse_pos)
 
+
 # set_force:全局变量
 set_force = {'力的大小': set_value_of_force,
              '力的方向': set_angle_of_force}
 
 
-def check_click(game_surface,  game_active, mouse_pos,
+def check_click(game_surface, game_active, mouse_pos,
                 mouse_buttons, buttons, sliders, free_objects):
     for button in buttons:
         # collidepoint()函数判断鼠标是否点击了按钮
@@ -107,7 +109,7 @@ def check_click(game_surface,  game_active, mouse_pos,
             button_clicked = button
             try:
                 game_active = click_button_events[button.text](
-                    game_surface,  game_active, button_clicked, sliders, free_objects)
+                    game_surface, game_active, button_clicked, sliders, free_objects)
             except KeyError as error:
                 pass
     for slider in sliders:
@@ -235,7 +237,7 @@ def update(game_surface, game_active, balls, buttons,
     for fixed_object in fixed_objects:
         fixed_object.draw()
 
-    if object_selected != None:
+    if object_selected is not None:
         object_selected.is_selected(
             pg.Color('green'), 2)
     if None != force_selected:
@@ -255,10 +257,10 @@ def display_text(surface, text, text_color, font_size, text_center):
     text_color = text_color  # 文本颜色
     font = pg.font.SysFont('simsunnsimsun', font_size)  # 宋体
     text_image = font.render(
-        text, True,  text_color)  # render()把文本变成图像
+        text, True, text_color)  # render()把文本变成图像
     text_image_rect = text_image.get_rect()
     text_image_rect.center = text_center
-    surface.blit(text_image,  text_image_rect)
+    surface.blit(text_image, text_image_rect)
 
 
 def display_game_active(game_surface, game_active):
@@ -274,12 +276,9 @@ def display_number_of_force(game_surface, free_objects):
     number = sum_of_forces
     text = '添加的力的总数：' + str(number)
     display_text(game_surface, text, pg.Color('red'), 27, (800, 100))
-    if object_selected != None:
+    if object_selected is not None:
         number = len(object_selected.forces)
     else:
         number = 0
     text = '选中的物体添加的力的数量：' + str(number)
     display_text(game_surface, text, pg.Color('red'), 27, (800, 150))
-
-
-

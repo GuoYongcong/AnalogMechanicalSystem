@@ -46,6 +46,7 @@ class Triangle:
             f.draw(color)
 
     def is_hit_the_edge(self, size):
+        # TODO
         return False
 
     def get_center(self):
