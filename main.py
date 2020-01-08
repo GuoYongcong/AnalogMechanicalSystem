@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import pygame as pg
-from shape import ball, rectangle, line, triangle
+from shape import ball, rectangle, line, triangle, polygon
 from pygame.locals import *
 import game_functions as gf
 import game_settings as gs
@@ -121,11 +121,12 @@ def run_game():
     height = gs.SIZE[1] / 8
     rect = Rect(0, gs.SIZE[1] - height, gs.SIZE[0] -
                 gs.MENU_SIZE[0], height)
+    points = [rect.bottomleft, rect.bottomright, rect.topright, rect.topleft]
     color = Color('white')
     cof = 0.5
-    G = 50
-    fixed_object_1 = rectangle.Rectangle(
-        game_surface, rect, color, cof, G, False)
+    m = 50
+    fixed_object_1 = polygon.Polygon(
+        game_surface, points, color, cof, m, False)
     fixed_objects.append(fixed_object_1)
 
     # 定义自由物体
@@ -136,9 +137,12 @@ def run_game():
     rect = Rect(left, top, width, height)
     color = Color('black')
     cof = 0.5
-    G = 100
-    free_object_1 = rectangle.Rectangle(
-        game_surface, rect, color, cof, G, True)
+    m = 100
+    # free_object_1 = rectangle.Rectangle(
+    #     game_surface, rect, color, cof, G, True)
+    points = [rect.bottomleft, rect.bottomright, rect.topright, rect.topleft]
+    free_object_1 = polygon.Polygon(
+        game_surface, points, color, cof, m, True)
     free_objects.append(free_object_1)
 
     pos = (round(gs.SIZE[0] / 2) + 80, round(gs.SIZE[1] / 2) + 40)
@@ -148,9 +152,12 @@ def run_game():
     free_object_2 = ball.Ball(game_surface, pos, m, v, color, True)
     free_objects.append(free_object_2)
     color = pg.Color('white')
-    pos =round(gs.SIZE[0] / 2), round(gs.SIZE[1] / 2)+220
-    points = [(pos[0]-150,pos[1]), (pos[0]+150,pos[1]),(pos[0]+150, pos[1] - 150)]
-    fixed_object_2 = triangle.Triangle(game_surface, points, color, cof, True)
+    rect = Rect(0, gs.SIZE[1] - height, gs.SIZE[0] -
+                gs.MENU_SIZE[0], height)
+    pos = round(gs.SIZE[0] / 2), rect.top
+    points = [(pos[0] - 150, pos[1]), (pos[0] + 150, pos[1]),
+              (pos[0] + 150, pos[1] - 150)]
+    fixed_object_2 = polygon.Polygon(game_surface, points, color, cof, True)
     fixed_objects.append(fixed_object_2)
     game_active = False
     while True:

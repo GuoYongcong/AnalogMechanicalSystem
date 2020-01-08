@@ -3,6 +3,7 @@ from shape.ball import Ball
 from shape.rectangle import Rectangle
 from shape.triangle import Triangle
 from shape.force import Force
+from shape.polygon import Polygon
 from utils import math_utils
 import pygame as pg
 import game_settings as gs
@@ -17,15 +18,8 @@ def contact_test(shape1, shape2):
     if isinstance(shape1, Ball):
         if isinstance(shape2, Ball):
             ball_contact_ball(shape1, shape2)
-        elif isinstance(shape2, Rectangle):
-            ball_contact_rectangle(shape1, shape2)
-        elif isinstance(shape2, Triangle):
-            ball_contact_triangle(shape1, shape2)
-    elif isinstance(shape1, Rectangle):
-        if isinstance(shape2, Ball):
-            ball_contact_rectangle(shape2, shape1)
-        elif isinstance(shape2, Rectangle):
-            rectangle_contact_rectangle(shape1, shape2)
+        elif isinstance(shape2, Polygon):
+            ball_contact_polygon(shape1, shape2)
 
 
 def ball_contact_ball(ball1, ball2):
@@ -63,56 +57,13 @@ def ball_contact_ball(ball1, ball2):
             ball1.v = ball1.v[0] * dx_coe, ball1.v[1] * dy_coe
 
 
-def ball_contact_rectangle(ball, rect):
-    ball_pos = ball.pos
-    rect_rect = rect.rect
-    if ball_pos[0] < rect_rect.left:
-        closest_x = rect_rect.left
-        dx1 = -1  # ball
-        dx2 = 1  # rect
-    elif ball_pos[0] > rect_rect.left + rect_rect.width:
-        closest_x = rect_rect.left + rect_rect.width
-        dx1 = 1
-        dx2 = -1
-    else:
-        closest_x = ball_pos[0]
-        dx1 = 0
-        dx2 = 0
-    if ball_pos[1] < rect_rect.top:
-        closest_y = rect_rect.top
-        dy1 = -1    # ball
-        dy2 = 1     # rect
-    elif ball_pos[1] > rect_rect.top + rect_rect.height:
-        closest_y = rect_rect.top + rect_rect.height
-        dy1 = 1
-        dy2 = -1
-    else:
-        closest_y = ball_pos[1]
-        dy1 = 0
-        dy2 = 0
-    distance = math_utils.distance_of_two_points(
-        ball_pos, (closest_x, closest_y))
-    # 判断矩形上距离圆形的最近点与圆心的距离是否小于圆的半径
-    if distance < ball.r:
-        dx = dx_two_points(ball_pos, (closest_x, closest_y), ball.r)
-        dx = round(dx / 2)
-        dy = dy_two_points(ball_pos, (closest_x, closest_y), ball.r)
-        dy = round(dy / 2)
-        dx1 = dx1 * dx
-        dx2 = dx2 * dx
-        dy1 = dy1 * dy
-        dy2 = dy2 * dy
-        # ball.pos = ball.pos[0] + dx1, ball.pos[1] + dy1
-        # rect.rect = rect.rect.move(dx2, dy2)
-
-
-def ball_contact_triangle(ball, triangle):
+def ball_contact_polygon(ball, polygon):
     closest_point = None  # 三角形边上垂直距离圆心最近的点中，直线距离最近的点
     min_d = ball.r  # closest_point垂直距离圆心的距离
     closest_border = []
     for k in range(3):
-        a = triangle.points[k]
-        b = triangle.points[(k + 1) % 3]
+        a = polygon.points[k]
+        b = polygon.points[(k + 1) % 3]
         c = ball.pos
         #   找三角形边上距离圆心最近的点p
         ab = math_utils.sub_op(b, a)
@@ -143,7 +94,7 @@ def ball_contact_triangle(ball, triangle):
         v_degrees = ball.get_v_degrees()
         dy = closest_border[0][1] - closest_border[1][1]
         dx = closest_border[0][0] - closest_border[1][0]
-        angle = math.degrees(math.atan2(dy, dx))   # 斜面角度
+        angle = math.degrees(math.atan2(dy, dx))  # 斜面角度
         if angle < 0:
             angle += 180
         if ball.v[1] > 0:
@@ -159,17 +110,18 @@ def ball_contact_triangle(ball, triangle):
         f_v = ball.m * gs.g * math.cos(angle)
         f_degrees = -90 + angle
         f = Force(ball.game_surface, f_v, f_degrees, ball.pos)
-        ball.append_supporting_force(hash(triangle), f)
+        ball.append_supporting_force(hash(polygon), f)
         # 斜面对小球的滚动摩擦
-        min_corf = ball.corf if ball.corf < triangle.corf else triangle.corf
+        min_corf = ball.corf if ball.corf < polygon.corf else polygon.corf
         dy1 = math.fabs(dy)
         dx1 = math.fabs(dx)
         degrees1 = math.degrees(math.atan2(dy1, dx1))
         fn = ball.get_fn(degrees1)
-        rf_v = fn * min_corf
-        angle =
-        rf = Force(ball.game_surface, rf_v, angle, closest_point)
-        ball.append_rolling_friction(hash(triangle), rf)
+        rf_v = fn * min_corf * 100
+        angle = 0  # TODO
+        pos = round(closest_point[0]), round(closest_point[1])
+        rf = Force(ball.game_surface, rf_v, angle, pos)
+        ball.append_rolling_friction(hash(polygon), rf)
         # 修正小球位置
         if min_d > 0:
             closest_point_to_ball_pos = math_utils.sub_op(
@@ -180,12 +132,8 @@ def ball_contact_triangle(ball, triangle):
             new_pos = math_utils.add_op(pos_to_new_pos, ball.pos)
             ball.pos = round(new_pos[0]), round(new_pos[1])
     else:
-        ball.delete_supporting_force(hash(triangle))
-
-
-def rectangle_contact_rectangle(rect1, rect2):
-    if rect2.rect.collidepoint(rect1.rect.bottomright):
-        dy = rect2.rect.top - rect1.rect.bottomright[1]
+        ball.delete_supporting_force(hash(polygon))
+        ball.delete_rolling_friction(hash(polygon))
 
 
 def dx_two_points(p1, p2, s):

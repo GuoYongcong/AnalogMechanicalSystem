@@ -23,10 +23,14 @@ class Ball:
         self.a = (0, gs.g)
         self.rotating_degrees = 0  # 小球旋转的角度数，逆时针为正
         self.rotating_a = 0  # 小球的旋转角加速度，逆时针为正
+        self.rotating_v = 0  # 小球的旋转角速度，逆时针为正
+        self.cof = 0.5  # 滑动摩擦系数
         self.corf = 0.05  # 滚动摩擦系数
         self.is_free = is_free
 
     def move(self):
+        self.rotate()
+        s = math.radians(self.rotating_v) * self.r
         # 计算加速度
         self.a = (0, gs.g)
         for f in self.forces:
@@ -60,7 +64,6 @@ class Ball:
             width)
 
     def move_and_draw(self):
-        self.rotate()
         self.move()
         self.draw()
 
@@ -75,6 +78,8 @@ class Ball:
             f.draw(color)
         for sf in self.supporting_forces.values():
             sf.draw(pg.Color('yellow'))
+        for rf in self.rolling_friction.values():
+            rf.draw(pg.Color('green'))
 
     def is_in_ball(self, pos):
         x = self.pos[0] - pos[0]
@@ -101,7 +106,6 @@ class Ball:
                 # 假定碰撞后动能损失一半
                 self.v = (round(value[i] * self.v[0] / math.sqrt(2)),
                           round(value[1 - i] * self.v[1] / math.sqrt(2)))
-
                 flag = True
                 temp = 0
                 d_value = 0
@@ -156,7 +160,9 @@ class Ball:
         moment = rf_v * self.r  # 合外力矩
         inertia = (self.m * self.r**2) / 2  # 圆形的转动惯量
         self.rotating_a = moment / inertia
-        self.rotating_degrees = (self.rotating_degrees + self.rotating_a) % 360
+        self.rotating_a = - self.rotating_a
+        self.rotating_v += self.rotating_a
+        self.rotating_degrees = (self.rotating_degrees + self.rotating_v) % 360
 
     def get_v_degrees(self):
         return math.degrees(math.atan2(self.v[1], self.v[0]))
