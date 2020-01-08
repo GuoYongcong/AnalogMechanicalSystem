@@ -154,20 +154,23 @@ def ball_contact_triangle(ball, triangle):
         times = math.sqrt(1 / 2)
         new_v = math_utils.times(new_v, times)
         ball.v = round(new_v[0]), round(new_v[1])
-        # pg.draw.line(
-        #     ball.game_surface,
-        #     pg.Color('red'),
-        #     closest_border[0],
-        #     closest_border[1],
-        #     5)
         # 斜面对小球的支持力
-        dy = closest_border[0][1] - closest_border[1][1]
-        dx = closest_border[0][0] - closest_border[1][0]
         angle = math.degrees(math.atan2(dy, dx))  # 斜面角度
         f_v = ball.m * gs.g * math.cos(angle)
         f_degrees = -90 + angle
         f = Force(ball.game_surface, f_v, f_degrees, ball.pos)
         ball.append_supporting_force(hash(triangle), f)
+        # 斜面对小球的滚动摩擦
+        min_corf = ball.corf if ball.corf < triangle.corf else triangle.corf
+        dy1 = math.fabs(dy)
+        dx1 = math.fabs(dx)
+        degrees1 = math.degrees(math.atan2(dy1, dx1))
+        fn = ball.get_fn(degrees1)
+        rf_v = fn * min_corf
+        angle =
+        rf = Force(ball.game_surface, rf_v, angle, closest_point)
+        ball.append_rolling_friction(hash(triangle), rf)
+        # 修正小球位置
         if min_d > 0:
             closest_point_to_ball_pos = math_utils.sub_op(
                 ball.pos, closest_point)

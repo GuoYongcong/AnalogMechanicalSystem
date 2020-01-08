@@ -23,18 +23,17 @@ class Ball:
         self.a = (0, gs.g)
         self.rotating_degrees = 0  # 小球旋转的角度数，逆时针为正
         self.rotating_a = 0  # 小球的旋转角加速度，逆时针为正
-        self.corf = 0.05 # 滚动摩擦系数
+        self.corf = 0.05  # 滚动摩擦系数
         self.is_free = is_free
-
 
     def move(self):
         # 计算加速度
         self.a = (0, gs.g)
         for f in self.forces:
-            self.a = self.a[0] + round(f.get_f()[0] /
+            self.a = self.a[0] + round(f.get_f()[0] / \
                                        self.m), self.a[1] + round(f.get_f()[1] / self.m)
         for sf in self.supporting_forces.values():
-            self.a = self.a[0] + round(sf.get_f()[0] /
+            self.a = self.a[0] + round(sf.get_f()[0] / \
                                        self.m), self.a[1] + round(sf.get_f()[1] / self.m)
 
         # 计算速度
@@ -151,6 +150,12 @@ class Ball:
             return False
 
     def rotate(self):
+        rf_v = 0
+        for rf in self.rolling_friction.values():
+            rf_v += rf.get_value()
+        moment = rf_v * self.r  # 合外力矩
+        inertia = (self.m * self.r**2) / 2  # 圆形的转动惯量
+        self.rotating_a = moment / inertia
         self.rotating_degrees = (self.rotating_degrees + self.rotating_a) % 360
 
     def get_v_degrees(self):
@@ -169,3 +174,13 @@ class Ball:
     def delete_rolling_friction(self, key):
         if self.rolling_friction.get(key):
             self.rolling_friction.pop(key)
+
+    def get_fn(self, degrees):
+        """小球对角度为degrees的斜面的正压力"""
+        mg = math_utils.rotate_vector((0, self.m * gs.g), degrees)
+        coe = 1 if self.v[1] < 0 else -1
+        fn = math.fabs(mg[1]) * coe
+        for f in self.forces:
+            f1 = math_utils.rotate_vector(f.get_f(),degrees)
+            fn += math.fabs(f1[1]) * coe
+        return fn

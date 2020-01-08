@@ -58,3 +58,6 @@ class Force:
 
     def set_pos(self, pos_x, pos_y):
         self.f['pos'] = pos_x, pos_y
+
+    def get_value(self):
+        return self.f['value']

@@ -1,9 +1,10 @@
+import sys
 import unittest
 from utils import math_utils
 import math
 
 
-class MyTestCase(unittest.TestCase):
+class UnitTest(unittest.TestCase):
     @unittest.skip
     def test_something(self):
         shape1 = [(0, 0), (1, 0), (0, 1)]
@@ -21,6 +22,10 @@ class MyTestCase(unittest.TestCase):
         vector = -1, 1
         vector_degrees = math.degrees(math.atan2(vector[1], vector[0]))
         degrees = 2 * (180 - vector_degrees - (-45))
+        result = math_utils.rotate_vector(vector, degrees)
+        self.assertEqual((1, -1), result)
+        vector = 0, 1
+        degrees = -45
         result = math_utils.rotate_vector(vector, degrees)
         self.assertEqual((1, -1), result)
 

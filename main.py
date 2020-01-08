@@ -141,7 +141,7 @@ def run_game():
         game_surface, rect, color, cof, G, True)
     free_objects.append(free_object_1)
 
-    pos = (round(gs.SIZE[0] / 2) + 80, round(gs.SIZE[1] / 2))
+    pos = (round(gs.SIZE[0] / 2) + 80, round(gs.SIZE[1] / 2) + 40)
     v = (0, 0)
     m = 5
     color = pg.Color('black')
