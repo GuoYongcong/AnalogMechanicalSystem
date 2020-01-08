@@ -141,21 +141,25 @@ def ball_contact_triangle(ball, triangle):
     if min_d < ball.r:
         # 小球反弹
         v_degrees = ball.get_v_degrees()
-        dy = math.fabs(closest_border[0][1] - closest_border[1][1])
-        dx = math.fabs(closest_border[0][0] - closest_border[1][0])
+        dy = closest_border[0][1] - closest_border[1][1]
+        dx = closest_border[0][0] - closest_border[1][0]
         angle = math.degrees(math.atan2(dy, dx))   # 斜面角度
+        if angle < 0:
+            angle += 180
+        if ball.v[1] > 0:
+            angle = -angle
         degrees = 2 * (180 - v_degrees - angle)
         new_v = math_utils.rotate_vector(ball.v, degrees)
         # 假定碰撞后动能损失一半
         times = math.sqrt(1 / 2)
         new_v = math_utils.times(new_v, times)
         ball.v = round(new_v[0]), round(new_v[1])
-        pg.draw.line(
-            ball.game_surface,
-            pg.Color('red'),
-            closest_border[0],
-            closest_border[1],
-            5)
+        # pg.draw.line(
+        #     ball.game_surface,
+        #     pg.Color('red'),
+        #     closest_border[0],
+        #     closest_border[1],
+        #     5)
         # 斜面对小球的支持力
         dy = closest_border[0][1] - closest_border[1][1]
         dx = closest_border[0][0] - closest_border[1][0]
@@ -172,6 +176,8 @@ def ball_contact_triangle(ball, triangle):
                 (ball.r - min_d) / min_d)
             new_pos = math_utils.add_op(pos_to_new_pos, ball.pos)
             ball.pos = round(new_pos[0]), round(new_pos[1])
+    else:
+        ball.delete_supporting_force(hash(triangle))
 
 
 def rectangle_contact_rectangle(rect1, rect2):

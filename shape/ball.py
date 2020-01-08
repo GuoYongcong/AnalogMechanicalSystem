@@ -19,10 +19,13 @@ class Ball:
         self.game_surface = game_surface  # 界面
         self.forces = []
         self.supporting_forces = {}
+        self.rolling_friction = {}
         self.a = (0, gs.g)
         self.rotating_degrees = 0  # 小球旋转的角度数，逆时针为正
         self.rotating_a = 0  # 小球的旋转角加速度，逆时针为正
+        self.corf = 0.05 # 滚动摩擦系数
         self.is_free = is_free
+
 
     def move(self):
         # 计算加速度
@@ -157,4 +160,12 @@ class Ball:
         self.supporting_forces[key] = f
 
     def delete_supporting_force(self, key):
-        self.supporting_forces.pop(key)
+        if self.supporting_forces.get(key):
+            self.supporting_forces.pop(key)
+
+    def append_rolling_friction(self, key, f):
+        self.rolling_friction[key] = f
+
+    def delete_rolling_friction(self, key):
+        if self.rolling_friction.get(key):
+            self.rolling_friction.pop(key)

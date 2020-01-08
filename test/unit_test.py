@@ -18,11 +18,11 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(True, is_in)
 
     def test_rotate_vector(self):
-        vector = 0, 1
+        vector = -1, 1
         vector_degrees = math.degrees(math.atan2(vector[1], vector[0]))
-        degrees = 2 * (180 - vector_degrees - 0)
+        degrees = 2 * (180 - vector_degrees - (-45))
         result = math_utils.rotate_vector(vector, degrees)
-        self.assertEqual((0, -1), result)
+        self.assertEqual((1, -1), result)
 
 
 if __name__ == '__main__':

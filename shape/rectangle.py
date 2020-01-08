@@ -10,6 +10,7 @@ class Rectangle:
         self.rect = rect
         self.color = color
         self.cof = cof  # 摩擦系数
+        self.corf = 0.05 # 滚动摩擦系数
         self.G = G  # 重力
         self.forces = []
         self.rect_2 = None

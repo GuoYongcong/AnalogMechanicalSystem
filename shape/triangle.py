@@ -10,6 +10,7 @@ class Triangle:
         self.points = points
         self.color = color
         self.cof = cof  # 摩擦系数
+        self.corf = 0.05 # 滚动摩擦系数
         self.m = m  # 质量
         self.forces = []
         self.angle = 0
