@@ -149,7 +149,7 @@ def run_game():
     free_objects.append(free_object_2)
     color = pg.Color('white')
     pos =round(gs.SIZE[0] / 2), round(gs.SIZE[1] / 2)+220
-    points = [(pos[0]-50,pos[1]), (pos[0]+150,pos[1]),(pos[0]+100,pos[1]-150)]
+    points = [(pos[0]-50,pos[1]), (pos[0]+150,pos[1]),(pos[0]+50,pos[1] - 50)]
     fixed_object_2 = triangle.Triangle(game_surface, points, color, cof, True)
     fixed_objects.append(fixed_object_2)
     game_active = False

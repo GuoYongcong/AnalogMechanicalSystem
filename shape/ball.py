@@ -18,8 +18,10 @@ class Ball:
         self.color = color  # 颜色
         self.game_surface = game_surface  # 界面
         self.forces = []
+        self.supporting_forces = {}
         self.a = (0, gs.g)
         self.rotating_degrees = 0  # 小球旋转的角度数，逆时针为正
+        self.rotating_a = 0  # 小球的旋转角加速度，逆时针为正
         self.is_free = is_free
 
     def move(self):
@@ -28,6 +30,10 @@ class Ball:
         for f in self.forces:
             self.a = self.a[0] + round(f.get_f()[0] /
                                        self.m), self.a[1] + round(f.get_f()[1] / self.m)
+        for sf in self.supporting_forces.values():
+            self.a = self.a[0] + round(sf.get_f()[0] /
+                                       self.m), self.a[1] + round(sf.get_f()[1] / self.m)
+
         # 计算速度
         self.v = self.v[0] + self.a[0], self.v[1] + self.a[1]
         # 计算位置
@@ -65,6 +71,8 @@ class Ball:
     def draw_force(self, color):
         for f in self.forces:
             f.draw(color)
+        for sf in self.supporting_forces.values():
+            sf.draw(pg.Color('yellow'))
 
     def is_in_ball(self, pos):
         x = self.pos[0] - pos[0]
@@ -140,7 +148,13 @@ class Ball:
             return False
 
     def rotate(self):
-        self.rotating_degrees = (self.rotating_degrees - 5) % 360
+        self.rotating_degrees = (self.rotating_degrees + self.rotating_a) % 360
 
     def get_v_degrees(self):
         return math.degrees(math.atan2(self.v[1], self.v[0]))
+
+    def append_supporting_force(self, key, f):
+        self.supporting_forces[key] = f
+
+    def delete_supporting_force(self, key):
+        self.supporting_forces.pop(key)

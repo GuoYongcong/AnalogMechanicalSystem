@@ -8,6 +8,7 @@ class Force:
 
     def __init__(self, surface, value, angle, pos):
         self.surface = surface
+        # 横轴正方向角度为0，顺时针为正
         self.f = {'value': value, 'angle': angle, 'pos': pos}
         self.rect = None
         self.f_x = 0

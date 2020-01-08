@@ -2,8 +2,10 @@ import math
 from shape.ball import Ball
 from shape.rectangle import Rectangle
 from shape.triangle import Triangle
+from shape.force import Force
 from utils import math_utils
 import pygame as pg
+import game_settings as gs
 
 
 def contact_test(shape1, shape2):
@@ -105,8 +107,8 @@ def ball_contact_rectangle(ball, rect):
 
 
 def ball_contact_triangle(ball, triangle):
-    min_d = ball.r  # 三角形边距离圆心最近的距离
-    closest_point = None  # 三角形边上距离圆心最近的点
+    closest_point = None  # 三角形边上垂直距离圆心最近的点中，直线距离最近的点
+    min_d = ball.r  # closest_point垂直距离圆心的距离
     closest_border = []
     for k in range(3):
         a = triangle.points[k]
@@ -141,15 +143,30 @@ def ball_contact_triangle(ball, triangle):
         v_degrees = ball.get_v_degrees()
         dy = math.fabs(closest_border[0][1] - closest_border[1][1])
         dx = math.fabs(closest_border[0][0] - closest_border[1][0])
-        angle = math.degrees(math.atan2(dy, dx))
+        angle = math.degrees(math.atan2(dy, dx))   # 斜面角度
         degrees = 2 * (180 - v_degrees - angle)
         new_v = math_utils.rotate_vector(ball.v, degrees)
         # 假定碰撞后动能损失一半
         times = math.sqrt(1 / 2)
         new_v = math_utils.times(new_v, times)
         ball.v = round(new_v[0]), round(new_v[1])
+        pg.draw.line(
+            ball.game_surface,
+            pg.Color('red'),
+            closest_border[0],
+            closest_border[1],
+            5)
+        # 斜面对小球的支持力
+        dy = closest_border[0][1] - closest_border[1][1]
+        dx = closest_border[0][0] - closest_border[1][0]
+        angle = math.degrees(math.atan2(dy, dx))  # 斜面角度
+        f_v = ball.m * gs.g * math.cos(angle)
+        f_degrees = -90 + angle
+        f = Force(ball.game_surface, f_v, f_degrees, ball.pos)
+        ball.append_supporting_force(hash(triangle), f)
         if min_d > 0:
-            closest_point_to_ball_pos = math_utils.sub_op(ball.pos, closest_point)
+            closest_point_to_ball_pos = math_utils.sub_op(
+                ball.pos, closest_point)
             pos_to_new_pos = math_utils.times(
                 closest_point_to_ball_pos,
                 (ball.r - min_d) / min_d)
