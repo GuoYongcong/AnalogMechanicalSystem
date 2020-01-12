@@ -232,7 +232,7 @@ def update(game_surface, game_active, balls, buttons,
             for fixed_object in fixed_objects:
                 contact_utils.contact_test(free_object, fixed_object)
             free_object.is_hit_the_edge(
-                (gs.SIZE[0] - gs.MENU_SIZE[0], gs.SIZE[1] * 7 / 8))
+                (gs.SIZE[0] - gs.MENU_SIZE[0], gs.SIZE[1]))
             free_object.draw_force(pg.Color('red'))
     else:
         for free_object in free_objects:

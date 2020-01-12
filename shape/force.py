@@ -65,3 +65,6 @@ class Force:
 
     def get_value(self):
         return self.f['value']
+
+    def get_angle(self):
+        return  self.f['angle']

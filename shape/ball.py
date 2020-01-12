@@ -29,16 +29,24 @@ class Ball:
         self.is_free = is_free
 
     def move(self):
-        self.rotate()
-        s = math.radians(self.rotating_v) * self.r
+        # self.rotate()
         # 计算加速度
         self.a = (0, gs.g)
         for f in self.forces:
-            self.a = self.a[0] + (f.get_f()[0] / \
-                                       self.m), self.a[1] + (f.get_f()[1] / self.m)
+            self.a = self.a[0] + (f.get_f()[0] /
+                                  self.m), self.a[1] + (f.get_f()[1] / self.m)
         for sf in self.supporting_forces.values():
-            self.a = self.a[0] + (sf.get_f()[0] / \
-                                       self.m), self.a[1] + (sf.get_f()[1] / self.m)
+            self.a = self.a[0] + (sf.get_f()[0] /
+                                  self.m), self.a[1] + (sf.get_f()[1] / self.m)
+        # if len(self.supporting_forces) > 0:
+        #     sf = None
+        #     for item in self.supporting_forces.values():
+        #         sf = item
+        #     degrees = math.fabs(sf.get_angle() + 90)
+        #     if 0 == degrees:
+        #         temp = math.radians(self.rotating_v) * self.r
+        #         self.a = self.a[0] - temp * math.cos(
+        #             degrees), self.a[1] + temp * math.sin(degrees)
 
         # 计算速度
         self.v = self.v[0] + self.a[0], self.v[1] + self.a[1]
@@ -51,7 +59,9 @@ class Ball:
 
     def draw(self):
         pg.draw.circle(
-            self.game_surface, self.color, (round(self.pos[0]), round(self.pos[1])), self.r)
+            self.game_surface, self.color, (round(
+                self.pos[0]), round(
+                self.pos[1])), self.r)
         start_pos = self.pos
         end_pos = math_utils.rotate_point_in_pygame(
             start_pos, (0, self.r), self.rotating_degrees)
@@ -59,8 +69,8 @@ class Ball:
         pg.draw.line(
             self.game_surface,
             Color('white'),
-            (round(start_pos[0]),round(start_pos[1])),
-            (round(end_pos[0]),round(end_pos[1])),
+            (round(start_pos[0]), round(start_pos[1])),
+            (round(end_pos[0]), round(end_pos[1])),
             width)
 
     def move_and_draw(self):
@@ -94,8 +104,10 @@ class Ball:
         return mouse_buttons[2] and self.is_in_ball(mouse_pos)
 
     def is_selected(self, color, width):
-        pg.draw.circle(self.game_surface, color,
-                       (round(self.pos[0]), round(self.pos[1])), self.r, width)  # 画选中框
+        pg.draw.circle(
+            self.game_surface, color, (round(
+                self.pos[0]), round(
+                self.pos[1])), self.r, width)  # 画选中框
 
     def is_hit_the_edge(self, size):
         flag = False
@@ -104,8 +116,10 @@ class Ball:
             if self.pos[i] <= self.r or self.pos[i] + self.r >= size[i]:
                 # 如果小球碰到界面的左边或右边，则x轴方向的速度大小不变，方向相反；上边或下边则是y轴
                 # 假定碰撞后动能损失一半
-                self.v = ((value[i] * self.v[0] / math.sqrt(2)),
-                          (value[1 - i] * self.v[1] / math.sqrt(2)))
+                times = math.sqrt(1 / 2)
+                self.v = ((value[i] * self.v[0] * times),
+                          (value[1 - i] * self.v[1] * times))
+                self.rotating_v = value[i] * self.rotating_v * times
                 flag = True
                 temp = 0
                 d_value = 0
@@ -116,8 +130,6 @@ class Ball:
                     temp = size[i] - self.r
                     d_value = size[i] - (self.pos[i] + self.r)
 
-                temp = (temp)
-                d_value = (d_value)
                 if 0 == i:
                     self.pos = temp, self.pos[1]
                     for force in self.forces:
@@ -154,8 +166,15 @@ class Ball:
             return False
 
     def rotate(self):
-        self.rotating_a = self.a[1] / self.r
-        self.rotating_a = - self.rotating_a
+        if len(self.supporting_forces) > 0:
+            sf = None
+            for item in self.supporting_forces.values():
+                sf = item
+            degrees = math.fabs(sf.get_angle() + 90)
+            self.rotating_a = (
+                -self.a[0] * math.cos(degrees) + self.a[1] * math.sin(degrees)) / self.r
+        else:
+            self.rotating_a = 0
         self.rotating_v += self.rotating_a
         self.rotating_degrees = (self.rotating_degrees + self.rotating_v) % 360
 
@@ -182,6 +201,6 @@ class Ball:
         coe = 1 if self.v[1] < 0 else -1
         fn = math.fabs(mg[1]) * coe
         for f in self.forces:
-            f1 = math_utils.rotate_vector(f.get_f(),degrees)
+            f1 = math_utils.rotate_vector(f.get_f(), degrees)
             fn += math.fabs(f1[1]) * coe
         return fn
