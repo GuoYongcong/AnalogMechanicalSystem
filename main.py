@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 import pygame as pg
-from shape import ball, rectangle, line, triangle, polygon
 from pygame.locals import *
+
 import game_functions as gf
 import game_settings as gs
-from control.button import Button
 from control import slider
+from control.button import Button
+from shape import ball, line, polygon
 
 
 def run_game():
@@ -55,7 +56,7 @@ def run_game():
     slider_color = Color('red')
     font_size = 18
     rect_1 = Rect(0, 0, 20, 100)
-    rect_1.center = button_pos[0], round(gs.SIZE[1] / 6)
+    rect_1.center = button_pos[0], (gs.SIZE[1] / 6)
     slider_1 = slider.Slider(
         game_surface,
         rect_1,
@@ -71,7 +72,7 @@ def run_game():
     max_value = 360
     value = max_value / 2
     rect_2 = Rect(0, 0, 20, 100)
-    rect_2.center = button_pos[0], round(gs.SIZE[1] * 5 / 6)
+    rect_2.center = button_pos[0], (gs.SIZE[1] * 5 / 6)
     slider_2 = slider.Slider(
         game_surface,
         rect_2,
@@ -145,7 +146,7 @@ def run_game():
         game_surface, points, color, cof, m, True)
     free_objects.append(free_object_1)
 
-    pos = (round(gs.SIZE[0] / 2) + 80, round(gs.SIZE[1] / 2) + 40)
+    pos = ((gs.SIZE[0] / 2) + 80, (gs.SIZE[1] / 2) + 40)
     v = (0, 0)
     m = 5
     color = pg.Color('black')
@@ -154,7 +155,7 @@ def run_game():
     color = pg.Color('white')
     rect = Rect(0, gs.SIZE[1] - height, gs.SIZE[0] -
                 gs.MENU_SIZE[0], height)
-    pos = round(gs.SIZE[0] / 2), rect.top
+    pos = (gs.SIZE[0] / 2), rect.top
     points = [(pos[0] - 150, pos[1]), (pos[0] + 150, pos[1]),
               (pos[0] + 150, pos[1] - 150)]
     fixed_object_2 = polygon.Polygon(game_surface, points, color, cof, True)
@@ -167,4 +168,5 @@ def run_game():
             game_surface, game_active, balls, buttons, sliders, free_objects)
 
 
-run_game()
+if __name__ == '__main__':
+    run_game()

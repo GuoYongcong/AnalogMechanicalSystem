@@ -57,8 +57,8 @@ class Polygon:
         for p in self.points:
             cx += p[0]
             cy += p[1]
-        cx = round(cx / len(self.points))
-        cy = round(cy / len(self.points))
+        cx = (cx / len(self.points))
+        cy = (cy / len(self.points))
         return cx, cy
 
     def rotate(self):
@@ -68,5 +68,6 @@ class Polygon:
             dx = self.points[i][0] - fixed_point[0]
             dy = self.points[i][1] - fixed_point[1]
             self.points[i] = (math_utils.rotate_point_in_pygame(fixed_point, (dx, dy), self.angle))
+
         pg.draw.polygon(
             self.surface, self.color, self.points)

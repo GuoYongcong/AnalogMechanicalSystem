@@ -34,11 +34,11 @@ class Ball:
         # 计算加速度
         self.a = (0, gs.g)
         for f in self.forces:
-            self.a = self.a[0] + round(f.get_f()[0] / \
-                                       self.m), self.a[1] + round(f.get_f()[1] / self.m)
+            self.a = self.a[0] + (f.get_f()[0] / \
+                                       self.m), self.a[1] + (f.get_f()[1] / self.m)
         for sf in self.supporting_forces.values():
-            self.a = self.a[0] + round(sf.get_f()[0] / \
-                                       self.m), self.a[1] + round(sf.get_f()[1] / self.m)
+            self.a = self.a[0] + (sf.get_f()[0] / \
+                                       self.m), self.a[1] + (sf.get_f()[1] / self.m)
 
         # 计算速度
         self.v = self.v[0] + self.a[0], self.v[1] + self.a[1]
@@ -51,7 +51,7 @@ class Ball:
 
     def draw(self):
         pg.draw.circle(
-            self.game_surface, self.color, self.pos, self.r)
+            self.game_surface, self.color, (round(self.pos[0]), round(self.pos[1])), self.r)
         start_pos = self.pos
         end_pos = math_utils.rotate_point_in_pygame(
             start_pos, (0, self.r), self.rotating_degrees)
@@ -59,8 +59,8 @@ class Ball:
         pg.draw.line(
             self.game_surface,
             Color('white'),
-            start_pos,
-            end_pos,
+            (round(start_pos[0]),round(start_pos[1])),
+            (round(end_pos[0]),round(end_pos[1])),
             width)
 
     def move_and_draw(self):
@@ -95,7 +95,7 @@ class Ball:
 
     def is_selected(self, color, width):
         pg.draw.circle(self.game_surface, color,
-                       self.pos, self.r, width)  # 画选中框
+                       (round(self.pos[0]), round(self.pos[1])), self.r, width)  # 画选中框
 
     def is_hit_the_edge(self, size):
         flag = False
@@ -104,8 +104,8 @@ class Ball:
             if self.pos[i] <= self.r or self.pos[i] + self.r >= size[i]:
                 # 如果小球碰到界面的左边或右边，则x轴方向的速度大小不变，方向相反；上边或下边则是y轴
                 # 假定碰撞后动能损失一半
-                self.v = (round(value[i] * self.v[0] / math.sqrt(2)),
-                          round(value[1 - i] * self.v[1] / math.sqrt(2)))
+                self.v = ((value[i] * self.v[0] / math.sqrt(2)),
+                          (value[1 - i] * self.v[1] / math.sqrt(2)))
                 flag = True
                 temp = 0
                 d_value = 0
@@ -116,8 +116,8 @@ class Ball:
                     temp = size[i] - self.r
                     d_value = size[i] - (self.pos[i] + self.r)
 
-                temp = round(temp)
-                d_value = round(d_value)
+                temp = (temp)
+                d_value = (d_value)
                 if 0 == i:
                     self.pos = temp, self.pos[1]
                     for force in self.forces:
@@ -148,18 +148,13 @@ class Ball:
                     # x轴和y轴方向分别运用动量守恒和能量守恒定理推导出此公式
                     new_v[j] = (v[j][i] * (m[i] - m[p]) + 2 *
                                 m[p] * v[j][p]) / (m[0] + m[1])
-                obj[i].v = (round(new_v[0]), round(new_v[1]))  # round()四舍五入
+                obj[i].v = ((new_v[0]), (new_v[1]))  # ()四舍五入
             return True
         else:
             return False
 
     def rotate(self):
-        rf_v = 0
-        for rf in self.rolling_friction.values():
-            rf_v += rf.get_value()
-        moment = rf_v * self.r  # 合外力矩
-        inertia = (self.m * self.r**2) / 2  # 圆形的转动惯量
-        self.rotating_a = moment / inertia
+        self.rotating_a = self.a[1] / self.r
         self.rotating_a = - self.rotating_a
         self.rotating_v += self.rotating_a
         self.rotating_degrees = (self.rotating_degrees + self.rotating_v) % 360
@@ -174,12 +169,12 @@ class Ball:
         if self.supporting_forces.get(key):
             self.supporting_forces.pop(key)
 
-    def append_rolling_friction(self, key, f):
-        self.rolling_friction[key] = f
-
-    def delete_rolling_friction(self, key):
-        if self.rolling_friction.get(key):
-            self.rolling_friction.pop(key)
+    # def append_rolling_friction(self, key, f):
+    #     self.rolling_friction[key] = f
+    #
+    # def delete_rolling_friction(self, key):
+    #     if self.rolling_friction.get(key):
+    #         self.rolling_friction.pop(key)
 
     def get_fn(self, degrees):
         """小球对角度为degrees的斜面的正压力"""

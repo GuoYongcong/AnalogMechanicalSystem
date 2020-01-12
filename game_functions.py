@@ -178,8 +178,8 @@ def orthogonal_decomposition_of_velocity(sliders):
             v = slider.value
         elif slider.text == "力的方向":
             a = slider.value
-    v_x = round(v * math.cos(math.radians(a)))  # radians()返回一个角度的弧度值
-    v_y = round(v * math.sin(math.radians(a)))
+    v_x = (v * math.cos(math.radians(a)))  # radians()返回一个角度的弧度值
+    v_y = (v * math.sin(math.radians(a)))
     return v_x, v_y
 
 

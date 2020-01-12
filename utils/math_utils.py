@@ -6,7 +6,7 @@ def rotate_point_in_pygame(fixed_point, end_point, angle):
     x1 = end_point[0] * math.cos(angle) - end_point[1] * math.sin(angle)
     y1 = end_point[0] * math.sin(angle) + end_point[1] * math.cos(angle)
 
-    return round(fixed_point[0] + x1), round(fixed_point[1] - y1)
+    return (fixed_point[0] + x1), (fixed_point[1] - y1)
 
 
 def support(shape1, shape2, vector):
@@ -100,4 +100,4 @@ def rotate_vector(vector, degrees):
     radians = math.radians(degrees)
     x1 = vector[0] * math.cos(radians) - vector[1] * math.sin(radians)
     y1 = vector[0] * math.sin(radians) + vector[1] * math.cos(radians)
-    return round(x1), round(y1)
+    return (x1), (y1)

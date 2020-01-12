@@ -1,12 +1,10 @@
 import math
+
+import game_settings as gs
 from shape.ball import Ball
-from shape.rectangle import Rectangle
-from shape.triangle import Triangle
 from shape.force import Force
 from shape.polygon import Polygon
 from utils import math_utils
-import pygame as pg
-import game_settings as gs
 
 
 def contact_test(shape1, shape2):
@@ -37,7 +35,7 @@ def ball_contact_ball(ball1, ball2):
         if ball1.pos[1] < ball2.pos[1]:
             dy_coe = -1
         ball1.pos = ball1.pos[0] + \
-            round(dx_coe * dx), ball1.pos[1] + round(dy_coe * dy)
+            (dx_coe * dx), ball1.pos[1] + (dy_coe * dy)
         if ball2.is_free:
             # 计算两个小球碰撞后的速度
             m = (ball1.m, ball2.m)
@@ -52,18 +50,18 @@ def ball_contact_ball(ball1, ball2):
                     # x轴和y轴方向分别运用动量守恒和能量守恒定理推导出此公式
                     new_v[j] = (v[j][i] * (m[i] - m[p]) + 2 *
                                 m[p] * v[j][p]) / (m[0] + m[1])
-                obj[i].v = (round(new_v[0]), round(new_v[1]))  # round()四舍五入
+                obj[i].v = ((new_v[0]), (new_v[1]))  # ()四舍五入
         else:
             ball1.v = ball1.v[0] * dx_coe, ball1.v[1] * dy_coe
 
 
 def ball_contact_polygon(ball, polygon):
     closest_point = None  # 三角形边上垂直距离圆心最近的点中，直线距离最近的点
-    min_d = ball.r  # closest_point垂直距离圆心的距离
+    min_d = gs.MAX_VALUE  # closest_point垂直距离圆心的距离
     closest_border = []
-    for k in range(3):
+    for k in range(len(polygon.points)):
         a = polygon.points[k]
-        b = polygon.points[(k + 1) % 3]
+        b = polygon.points[(k + 1) % len(polygon.points)]
         c = ball.pos
         #   找三角形边上距离圆心最近的点p
         ab = math_utils.sub_op(b, a)
@@ -89,7 +87,7 @@ def ball_contact_polygon(ball, polygon):
             closest_border.clear()
             closest_border.append(a)
             closest_border.append(b)
-    if min_d < ball.r:
+    if min_d <= ball.r:
         # 小球反弹
         v_degrees = ball.get_v_degrees()
         dy = closest_border[0][1] - closest_border[1][1]
@@ -104,7 +102,7 @@ def ball_contact_polygon(ball, polygon):
         # 假定碰撞后动能损失一半
         times = math.sqrt(1 / 2)
         new_v = math_utils.times(new_v, times)
-        ball.v = round(new_v[0]), round(new_v[1])
+        ball.v = (new_v[0]), (new_v[1])
         # 斜面对小球的支持力
         angle = math.degrees(math.atan2(dy, dx))  # 斜面角度
         f_v = ball.m * gs.g * math.cos(angle)
@@ -119,9 +117,9 @@ def ball_contact_polygon(ball, polygon):
         fn = ball.get_fn(degrees1)
         rf_v = fn * min_corf * 100
         angle = 0  # TODO
-        pos = round(closest_point[0]), round(closest_point[1])
+        pos = (closest_point[0]), (closest_point[1])
         rf = Force(ball.game_surface, rf_v, angle, pos)
-        ball.append_rolling_friction(hash(polygon), rf)
+        # ball.append_rolling_friction(hash(polygon), rf)
         # 修正小球位置
         if min_d > 0:
             closest_point_to_ball_pos = math_utils.sub_op(
@@ -130,10 +128,10 @@ def ball_contact_polygon(ball, polygon):
                 closest_point_to_ball_pos,
                 (ball.r - min_d) / min_d)
             new_pos = math_utils.add_op(pos_to_new_pos, ball.pos)
-            ball.pos = round(new_pos[0]), round(new_pos[1])
+            ball.pos = (new_pos[0]), (new_pos[1])
     else:
         ball.delete_supporting_force(hash(polygon))
-        ball.delete_rolling_friction(hash(polygon))
+        # ball.delete_rolling_friction(hash(polygon))
 
 
 def dx_two_points(p1, p2, s):

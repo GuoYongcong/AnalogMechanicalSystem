@@ -17,8 +17,8 @@ class Force:
 
     def decomposite_force(self):
         a = math.radians(self.f['angle'])
-        self.f_x = round(self.f['value'] * math.cos(a))  # 把力分解到水平方向
-        self.f_y = round(self.f['value'] * math.sin(a))  # 把力分解到竖直方向
+        self.f_x = (self.f['value'] * math.cos(a))  # 把力分解到水平方向
+        self.f_y = (self.f['value'] * math.sin(a))  # 把力分解到竖直方向
 
     def set_f(self, k, v):
         self.f[k] = v
@@ -30,21 +30,25 @@ class Force:
     def draw(self, color):
         start_pos = self.f['pos']
         end_pos = (start_pos[0] + self.f_x, start_pos[1] + self.f_y)
+        end_pos = (round(end_pos[0]),round(end_pos[1]))
         width = 2
         self.rect = pg.draw.line(
-            self.surface, color, start_pos, end_pos, width)
+            self.surface, color, (round(start_pos[0]),round(start_pos[1])),
+            end_pos, width)
         r = 3
-        pg.draw.circle(self.surface, color, start_pos, r)  # 画起点
+        pg.draw.circle(self.surface, color, (round(start_pos[0]),round(start_pos[1])), r)  # 画起点
         x = 5
         a = math.atan2(x, (self.f['value'] - x))
         b = math.sqrt((self.f['value'] - x)**2 + 4)
         c = math.radians(self.f['angle']) - a
         start_pos = (self.f['pos'][0] + b * math.cos(c),
                      self.f['pos'][1] + b * math.sin(c))
+        start_pos = (round(start_pos[0]),round(start_pos[1]))
         pg.draw.line(self.surface, color, start_pos, end_pos, width)
         d = math.radians(self.f['angle']) + a
         start_pos = (self.f['pos'][0] + b * math.cos(d),
                      self.f['pos'][1] + b * math.sin(d))
+        start_pos = (round(start_pos[0]), round(start_pos[1]))
         pg.draw.line(self.surface, color, start_pos, end_pos, width)
 
     def check_click_right(self, mouse_pos, mouse_buttons):
