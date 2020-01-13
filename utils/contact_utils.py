@@ -105,7 +105,7 @@ def ball_contact_polygon(ball, polygon):
         ball.v = (new_v[0]), (new_v[1])
         # 斜面对小球的支持力
         angle = math.degrees(math.atan2(dy, dx))  # 斜面角度
-        f_v = ball.m * gs.g * math.cos(angle)
+        f_v = ball.m * gs.g * math.cos(math.radians(angle))
         f_degrees = -90 + angle
         f = Force(ball.game_surface, f_v, f_degrees, ball.pos)
         ball.append_supporting_force(hash(polygon), f)

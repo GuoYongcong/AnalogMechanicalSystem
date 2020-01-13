@@ -29,23 +29,17 @@ class Ball:
         self.is_free = is_free
 
     def move(self):
-
         # 计算加速度
-
-        for sf in self.supporting_forces.values():
-            self.a = self.a[0] + (sf.get_f()[0] /
-                                  self.m), self.a[1] + (sf.get_f()[1] / self.m)
-
         if len(self.supporting_forces) > 0:
             sf = None
             for item in self.supporting_forces.values():
                 sf = item
-            degrees = math.fabs(sf.get_angle() + 90)
-            ac = gs.g * math.sin(degrees)
-            self.a = -ac * math.cos(degrees), ac * math.sin(degrees)
+            rad = math.radians(math.fabs(sf.get_angle() + 90))
+            ac = gs.g * math.sin(rad)
+            self.a = -ac * math.cos(rad), ac * math.sin(rad)
             self.rotate()
             vv = math.radians(self.rotating_v) * self.r
-            self.v = -vv * math.cos(degrees), vv * math.sin(degrees)
+            self.v = -vv * math.cos(rad), vv * math.sin(rad)
             # if 0 == degrees:
             #     temp = math.radians(self.rotating_v) * self.r
             #     self.a = self.a[0] - temp * math.cos(

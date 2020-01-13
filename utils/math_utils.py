@@ -2,9 +2,9 @@ import math
 
 
 def rotate_point_in_pygame(fixed_point, end_point, angle):
-    angle = math.radians(angle)
-    x1 = end_point[0] * math.cos(angle) - end_point[1] * math.sin(angle)
-    y1 = end_point[0] * math.sin(angle) + end_point[1] * math.cos(angle)
+    rad = math.radians(angle)
+    x1 = end_point[0] * math.cos(rad) - end_point[1] * math.sin(rad)
+    y1 = end_point[0] * math.sin(rad) + end_point[1] * math.cos(rad)
 
     return (fixed_point[0] + x1), (fixed_point[1] - y1)
 
