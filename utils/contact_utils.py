@@ -5,6 +5,7 @@ from shape.ball import Ball
 from shape.force import Force
 from shape.polygon import Polygon
 from utils import math_utils
+import pygame as pg
 
 
 def contact_test(shape1, shape2):
@@ -18,6 +19,56 @@ def contact_test(shape1, shape2):
             ball_contact_ball(shape1, shape2)
         elif isinstance(shape2, Polygon):
             ball_contact_polygon(shape1, shape2)
+    elif isinstance(shape1, Polygon):
+        if isinstance(shape2, Polygon):
+            polygon_contact_polygon(shape1, shape2)
+
+
+def dx_two_points(p1, p2, s):
+    """参数s表示修正后两点的距离"""
+    ds = s - math_utils.distance_of_two_points(p1, p2)
+    return ds * math.fabs(p1[0] - p2[0]) / s
+
+
+def dy_two_points(p1, p2, s):
+    """参数s表示修正后两点的距离"""
+    ds = s - math_utils.distance_of_two_points(p1, p2)
+    return ds * math.fabs(p1[1] - p2[1]) / s
+
+
+def  get_closest_point(polygon, point):
+    closest_point = None  # 多边形边上垂直距离点point最近的点中，直线距离最近的点
+    min_d = gs.MAX_VALUE  # closest_point垂直距离点point的距离
+    closest_border = []
+    for k in range(len(polygon.points)):
+        a = polygon.points[k]
+        b = polygon.points[(k + 1) % len(polygon.points)]
+        c = point
+        #   找多边形边上距离点point最近的点p
+        ab = math_utils.sub_op(b, a)
+        ac = math_utils.sub_op(c, a)
+        ac_len = math_utils.v_len(ac)
+        ab_len = math_utils.v_len(ab)
+        if ac_len > 0:
+            ap_len = math_utils.dot_op(ac, ab) / ab_len
+        else:
+            ap_len = 0
+        if ap_len <= 0:
+            p = a
+        elif ap_len >= ab_len:
+            p = b
+        else:
+            times = ap_len / ab_len
+            ap = math_utils.times(ab, times)
+            p = math_utils.add_op(a, ap)
+        d = math_utils.distance_of_two_points(p, c)
+        if d < min_d:
+            min_d = d
+            closest_point = p
+            closest_border.clear()
+            closest_border.append(a)
+            closest_border.append(b)
+    return closest_point, min_d, closest_border
 
 
 def ball_contact_ball(ball1, ball2):
@@ -56,37 +107,10 @@ def ball_contact_ball(ball1, ball2):
 
 
 def ball_contact_polygon(ball, polygon):
-    closest_point = None  # 三角形边上垂直距离圆心最近的点中，直线距离最近的点
-    min_d = gs.MAX_VALUE  # closest_point垂直距离圆心的距离
-    closest_border = []
-    for k in range(len(polygon.points)):
-        a = polygon.points[k]
-        b = polygon.points[(k + 1) % len(polygon.points)]
-        c = ball.pos
-        #   找三角形边上距离圆心最近的点p
-        ab = math_utils.sub_op(b, a)
-        ac = math_utils.sub_op(c, a)
-        ac_len = math_utils.v_len(ac)
-        ab_len = math_utils.v_len(ab)
-        if ac_len > 0:
-            ap_len = math_utils.dot_op(ac, ab) / ab_len
-        else:
-            ap_len = 0
-        if ap_len <= 0:
-            p = a
-        elif ap_len >= ab_len:
-            p = b
-        else:
-            times = ap_len / ab_len
-            ap = math_utils.times(ab, times)
-            p = math_utils.add_op(a, ap)
-        d = math_utils.distance_of_two_points(p, c)
-        if d < min_d:
-            min_d = d
-            closest_point = p
-            closest_border.clear()
-            closest_border.append(a)
-            closest_border.append(b)
+    # closest_point   # 多边形边上垂直距离圆心最近的点中，直线距离最近的点
+    # min_d   # closest_point垂直距离圆心的距离
+    # closest_border = []
+    closest_point, min_d, closest_border = get_closest_point(polygon, ball.pos)
     if min_d <= ball.r:
         # 小球反弹
         v_degrees = ball.get_v_degrees()
@@ -134,13 +158,15 @@ def ball_contact_polygon(ball, polygon):
         # ball.delete_rolling_friction(hash(polygon))
 
 
-def dx_two_points(p1, p2, s):
-    """参数s表示修正后两点的距离"""
-    ds = s - math_utils.distance_of_two_points(p1, p2)
-    return ds * math.fabs(p1[0] - p2[0]) / s
+def polygon_contact_polygon(polygon1, polygon2):
 
+    for point in polygon1.points:
+        if math_utils.point_in_polygon(polygon2.points, point) is True:
+            closest_point, min_d, closest_border = get_closest_point(polygon2, point)
+            return True
 
-def dy_two_points(p1, p2, s):
-    """参数s表示修正后两点的距离"""
-    ds = s - math_utils.distance_of_two_points(p1, p2)
-    return ds * math.fabs(p1[1] - p2[1]) / s
+    for point in polygon2.points:
+        if math_utils.point_in_polygon(polygon1.points, point) is True:
+            return True
+    return False
+
