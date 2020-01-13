@@ -13,17 +13,16 @@ class Polygon:
         self.corf = 0.05 # 滚动摩擦系数
         self.m = m  # 质量
         self.forces = []
-        self.angle = 0
+        self.rotating_a = 0
         self.is_free = is_free
 
     def move(self):
-        pass
+        self.rotate()
 
     def draw(self, width=0):
         pg.draw.polygon(self.surface, self.color, self.points, width)
 
     def move_and_draw(self):
-        # self.rotate()
         self.move()
         self.draw()
 
@@ -62,12 +61,10 @@ class Polygon:
         return cx, cy
 
     def rotate(self):
-        self.angle = (self.angle - 3) % 360
+        self.rotating_a = -1
         fixed_point = self.points[0]
         for i in range(len(self.points)):
-            dx = self.points[i][0] - fixed_point[0]
-            dy = self.points[i][1] - fixed_point[1]
-            self.points[i] = (math_utils.rotate_point_in_pygame(fixed_point, (dx, dy), self.angle))
+            self.points[i] = (math_utils.rotate_point_in_pygame(fixed_point, self.points[i], self.rotating_a))
 
         pg.draw.polygon(
             self.surface, self.color, self.points)

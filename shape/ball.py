@@ -66,7 +66,7 @@ class Ball:
                 self.pos[1])), self.r)
         start_pos = self.pos
         end_pos = math_utils.rotate_point_in_pygame(
-            start_pos, (0, self.r), self.rotating_degrees)
+            start_pos, (start_pos[0], start_pos[1] - self.r), -self.rotating_degrees)
         width = 1
         pg.draw.line(
             self.game_surface,

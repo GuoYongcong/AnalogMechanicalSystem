@@ -1,12 +1,23 @@
 import math
+import numpy
 
 
 def rotate_point_in_pygame(fixed_point, end_point, angle):
     rad = math.radians(angle)
-    x1 = end_point[0] * math.cos(rad) - end_point[1] * math.sin(rad)
-    y1 = end_point[0] * math.sin(rad) + end_point[1] * math.cos(rad)
-
-    return (fixed_point[0] + x1), (fixed_point[1] - y1)
+    sin = math.sin(rad)
+    cos = math.cos(rad)
+    m1 = numpy.array([[cos, -sin],
+                      [sin, cos]])
+    m2 = numpy.array([[end_point[0]],
+                      [end_point[1]]])
+    m3 = numpy.array([[fixed_point[0]],
+                      [fixed_point[1]]])
+    m4 = numpy.add(numpy.dot(m1, numpy.subtract(m2, m3)), m3)
+    [[x], [y]] = m4.tolist()
+    return x, y
+    # x1 = end_point[0] * math.cos(rad) - end_point[1] * math.sin(rad)
+    # y1 = end_point[0] * math.sin(rad) + end_point[1] * math.cos(rad)
+    # return (fixed_point[0] + x1), (fixed_point[1] - y1)
 
 
 def support(shape1, shape2, vector):
