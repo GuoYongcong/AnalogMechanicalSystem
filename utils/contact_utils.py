@@ -163,6 +163,20 @@ def polygon_contact_polygon(polygon1, polygon2):
     for point in polygon1.points:
         if math_utils.point_in_polygon(polygon2.points, point) is True:
             closest_point, min_d, closest_border = get_closest_point(polygon2, point)
+            if min_d > 0:
+                for p in polygon1.points:
+                    dy = closest_border[0][1] - closest_border[1][1]
+                    dx = closest_border[0][0] - closest_border[1][0]
+                    angle = math.degrees(math.atan2(dy, dx))  # 斜面角度
+                    degrees = -90 + angle
+
+                    closest_point_to_ball_pos = math_utils.sub_op(
+                        p, closest_point)
+                    pos_to_new_pos = math_utils.times(
+                        closest_point_to_ball_pos,
+                        (ball.r - min_d) / min_d)
+                    new_pos = math_utils.add_op(pos_to_new_pos, ball.pos)
+                    ball.pos = (new_pos[0]), (new_pos[1])
             return True
 
     for point in polygon2.points:
