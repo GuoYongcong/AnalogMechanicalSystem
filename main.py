@@ -155,9 +155,10 @@ def run_game():
     color = pg.Color('white')
     rect = Rect(0, gs.SIZE[1] - height, gs.SIZE[0] -
                 gs.MENU_SIZE[0], height)
-    pos = (gs.SIZE[0] / 2), rect.top
-    points = [(pos[0] - 150, pos[1]), (pos[0] + 150, pos[1]),
-              (pos[0] + 150, pos[1] - 150)]
+    pos = gs.SIZE[0] - gs.MENU_SIZE[0], gs.SIZE[1] - height
+    # pos = (gs.SIZE[0] / 2), rect.top
+    points = [(pos[0] - 250, pos[1]), (pos[0], pos[1]),
+              (pos[0], pos[1] - height*2)]
     fixed_object_2 = polygon.Polygon(game_surface, points, color, cof, True)
     fixed_objects.append(fixed_object_2)
     game_active = False

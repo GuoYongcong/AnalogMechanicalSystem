@@ -92,8 +92,7 @@ def two_shapes_intersect(shape1, shape2):
 def distance_of_two_points(point_a, point_b):
     x = point_a[0] - point_b[0]
     y = point_a[1] - point_b[1]
-    distance = math.sqrt(x**2 + y**2)
-    return distance
+    return math.sqrt(x**2 + y**2)
 
 
 def rotate_vector(vector, degrees):

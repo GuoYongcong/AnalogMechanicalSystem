@@ -29,27 +29,35 @@ class Ball:
         self.is_free = is_free
 
     def move(self):
-        # self.rotate()
+
         # 计算加速度
-        self.a = (0, gs.g)
-        for f in self.forces:
-            self.a = self.a[0] + (f.get_f()[0] /
-                                  self.m), self.a[1] + (f.get_f()[1] / self.m)
+
         for sf in self.supporting_forces.values():
             self.a = self.a[0] + (sf.get_f()[0] /
                                   self.m), self.a[1] + (sf.get_f()[1] / self.m)
-        # if len(self.supporting_forces) > 0:
-        #     sf = None
-        #     for item in self.supporting_forces.values():
-        #         sf = item
-        #     degrees = math.fabs(sf.get_angle() + 90)
-        #     if 0 == degrees:
-        #         temp = math.radians(self.rotating_v) * self.r
-        #         self.a = self.a[0] - temp * math.cos(
-        #             degrees), self.a[1] + temp * math.sin(degrees)
 
-        # 计算速度
-        self.v = self.v[0] + self.a[0], self.v[1] + self.a[1]
+        if len(self.supporting_forces) > 0:
+            sf = None
+            for item in self.supporting_forces.values():
+                sf = item
+            degrees = math.fabs(sf.get_angle() + 90)
+            ac = gs.g * math.sin(degrees)
+            self.a = -ac * math.cos(degrees), ac * math.sin(degrees)
+            self.rotate()
+            vv = math.radians(self.rotating_v) * self.r
+            self.v = -vv * math.cos(degrees), vv * math.sin(degrees)
+            # if 0 == degrees:
+            #     temp = math.radians(self.rotating_v) * self.r
+            #     self.a = self.a[0] - temp * math.cos(
+            #         degrees), self.a[1] + temp * math.sin(degrees)
+        else:
+            self.a = (0, gs.g)
+            for f in self.forces:
+                self.a = self.a[0] + (f.get_f()[0] /
+                                      self.m), self.a[1] + (f.get_f()[1] / self.m)
+            self.rotate()
+            self.v = self.v[0] + self.a[0], self.v[1] + self.a[1]
+
         # 计算位置
         self.pos = (self.pos[0] + self.v[0], self.pos[1] + self.v[1])
         # 调整力在屏幕的位置
@@ -86,10 +94,10 @@ class Ball:
     def draw_force(self, color):
         for f in self.forces:
             f.draw(color)
-        for sf in self.supporting_forces.values():
-            sf.draw(pg.Color('yellow'))
-        for rf in self.rolling_friction.values():
-            rf.draw(pg.Color('green'))
+        # for sf in self.supporting_forces.values():
+        #     sf.draw(pg.Color('yellow'))
+        # for rf in self.rolling_friction.values():
+        #     rf.draw(pg.Color('green'))
 
     def is_in_ball(self, pos):
         x = self.pos[0] - pos[0]
@@ -167,12 +175,14 @@ class Ball:
 
     def rotate(self):
         if len(self.supporting_forces) > 0:
-            sf = None
-            for item in self.supporting_forces.values():
-                sf = item
-            degrees = math.fabs(sf.get_angle() + 90)
-            self.rotating_a = (
-                -self.a[0] * math.cos(degrees) + self.a[1] * math.sin(degrees)) / self.r
+            # sf = None
+            # for item in self.supporting_forces.values():
+            #     sf = item
+            # degrees = math.fabs(sf.get_angle() + 90)
+            # self.rotating_a = (
+            #     -self.a[0] * math.cos(degrees) + self.a[1] * math.sin(degrees)) / self.r
+            self.rotating_a = math_utils.distance_of_two_points(self.a, (0, 0))/2
+            self.rotating_a = math.radians(self.rotating_a)
         else:
             self.rotating_a = 0
         self.rotating_v += self.rotating_a
