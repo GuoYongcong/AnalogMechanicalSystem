@@ -39,11 +39,11 @@ def get_farthest_point_in_direction(shape, vector):
     return max_value_point[1]
 
 
-def point_in_triangle(triangle, point):
+def point_in_triangle(points, point):
     """判断一个点是否在一个三角形中"""
-    p1 = sub_op(triangle[2], triangle[0])
-    p2 = sub_op(triangle[1], triangle[0])
-    p3 = sub_op(point, triangle[0])
+    p1 = sub_op(points[2], points[0])
+    p2 = sub_op(points[1], points[0])
+    p3 = sub_op(point, points[0])
     dot11 = dot_op(p1, p1)
     dot12 = dot_op(p1, p2)
     dot13 = dot_op(p1, p3)
@@ -57,6 +57,18 @@ def point_in_triangle(triangle, point):
     if v < 0 or v > 1:
         return False
     return u + v <= 1
+
+
+def point_in_polygon(points, point):
+    """判断一个点是否在一个多边形中"""
+    length = len(points)
+    for i in range(length):
+        for j in range(i + 1, length):
+            for k in range(j + 1, length):
+                b = point_in_triangle([points[i], points[j], points[k]], point)
+                if b is True:
+                    return True
+    return False
 
 
 def dot_op(vector1, vector2):

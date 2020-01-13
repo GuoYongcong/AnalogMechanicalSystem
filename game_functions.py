@@ -46,8 +46,8 @@ def click_button_add(game_surface, game_active,
     return game_active
 
 
-def click_button_undo(game_surface, game_active,
-                      button_clicked, sliders, free_objects):
+def click_button_delete(game_surface, game_active,
+                        button_clicked, sliders, free_objects):
     if force_selected is not None:
         object_selected.forces.remove(force_selected)
         global force_selected
@@ -77,7 +77,7 @@ def click_button_pause(game_surface, game_active,
 
 # click_button_events:全局变量
 click_button_events = {'添加': click_button_add,
-                       '删除': click_button_undo,
+                       '删除': click_button_delete,
                        '启动': click_button_launch,
                        '暂停': click_button_pause}
 
@@ -138,6 +138,8 @@ def check_click(game_surface, game_active, mouse_pos,
 
 
 def get_sliders_value(sliders):
+    f = 0
+    a = 0
     for slider in sliders:
         if '力的大小' == slider.text:
             f = slider.value

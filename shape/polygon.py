@@ -28,12 +28,12 @@ class Polygon:
 
     def check_click_left(self, mouse_pos, mouse_buttons):
         """检测是否点击了鼠标左键"""
-        return mouse_buttons[0] and math_utils.point_in_triangle(
+        return mouse_buttons[0] and math_utils.point_in_polygon(
             self.points, mouse_pos)
 
     def check_click_right(self, mouse_pos, mouse_buttons):
         """检测是否点击了鼠标右键"""
-        return mouse_buttons[2] and math_utils.point_in_triangle(
+        return mouse_buttons[2] and math_utils.point_in_polygon(
             self.points, mouse_pos)
 
     def is_selected(self, color, width):
@@ -62,9 +62,10 @@ class Polygon:
 
     def rotate(self):
         self.rotating_a = -1
-        fixed_point = self.points[0]
+        fixed_point = math_utils.add_op(self.points[1], self.points[2])
+        fixed_point = math_utils.times(fixed_point, 1/2)
+        pg.draw.line(self.surface, pg.Color('red'),fixed_point, fixed_point,5)
         for i in range(len(self.points)):
             self.points[i] = (math_utils.rotate_point_in_pygame(fixed_point, self.points[i], self.rotating_a))
-
         pg.draw.polygon(
             self.surface, self.color, self.points)
