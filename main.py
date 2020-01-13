@@ -130,11 +130,25 @@ def run_game():
         game_surface, points, color, cof, m, False)
     fixed_objects.append(fixed_object_1)
 
+    height = height / 2
+    rect = Rect(
+        0,
+        gs.SIZE[1] / 2 - height,
+        (gs.SIZE[0] - gs.MENU_SIZE[0]) / 2,
+        height)
+    points = [rect.bottomleft, rect.bottomright, rect.topright, rect.topleft]
+    color = Color('white')
+    cof = 0.5
+    m = 50
+    fixed_object_1 = polygon.Polygon(
+        game_surface, points, color, cof, m, False)
+    fixed_objects.append(fixed_object_1)
+
     # 定义自由物体
     width = gs.SIZE[0] / 5
     height = gs.SIZE[1] / 8
     left = width
-    top = gs.SIZE[1] / 2 - height
+    top = rect.top - height
     rect = Rect(left, top, width, height)
     color = Color('black')
     cof = 0.5
@@ -157,9 +171,10 @@ def run_game():
                 gs.MENU_SIZE[0], height)
     pos = gs.SIZE[0] - gs.MENU_SIZE[0], gs.SIZE[1] - height
     points = [(pos[0] - 250, pos[1]), (pos[0], pos[1]),
-              (pos[0], pos[1] - height*3)]
+              (pos[0], pos[1] - height * 3)]
     fixed_object_2 = polygon.Polygon(game_surface, points, color, cof, True)
     fixed_objects.append(fixed_object_2)
+
     game_active = False
     while True:
         gf.update(game_surface, game_active, balls,
