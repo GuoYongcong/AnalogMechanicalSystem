@@ -110,15 +110,43 @@ def run_game():
                        start_pos, end_pos, width)
     lines.append(line_3)
 
-    width = 10
-    pos_x = -1
-    start_pos = (pos_x, 0)
-    end_pos = (pos_x, gs.SIZE[1])
-    line_4 = line.Line(game_surface, gs.LINE_COLOR,
-                       start_pos, end_pos, width)
-    lines.append(line_4)
-
     # 定义固定物体
+    width = 10
+    height = gs.SIZE[1]
+    rect0 = Rect(0, 0, width, height)
+    color = Color('white')
+    points = [
+        rect0.bottomleft,
+        rect0.bottomright,
+        rect0.topright,
+        rect0.topleft]
+    fixed_object0 = polygon.Polygon(
+        game_surface, points, color, 0.5, 10, False)
+    fixed_objects.append(fixed_object0)
+
+    rect_left = gs.SIZE[0] - gs.MENU_SIZE[0] - 5
+    rect0 = Rect(rect_left, 0, width, height)
+    points = [
+        rect0.bottomleft,
+        rect0.bottomright,
+        rect0.topright,
+        rect0.topleft]
+    fixed_object0 = polygon.Polygon(
+        game_surface, points, color, 0.5, 10, False)
+    fixed_objects.append(fixed_object0)
+
+    height = width
+    width = rect_left
+    rect0 = Rect(0, 0, width, height)
+    points = [
+        rect0.bottomleft,
+        rect0.bottomright,
+        rect0.topright,
+        rect0.topleft]
+    fixed_object0 = polygon.Polygon(
+        game_surface, points, color, 0.5, 10, False)
+    fixed_objects.append(fixed_object0)
+
     height = gs.SIZE[1] / 8
     rect = Rect(0, gs.SIZE[1] - height, gs.SIZE[0] -
                 gs.MENU_SIZE[0], height)
