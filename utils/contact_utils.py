@@ -181,6 +181,9 @@ def polygon_contact_polygon(polygon1, polygon2):
                 vector = math_utils.sub_op(point, closest_point)
     if fixed_point is not None:
         polygon1.append_fixed_point(hash(polygon2), fixed_point)
+        # 修正速度
+        if vector[0] > 0.0001:
+            polygon1.rotating_v = -polygon1.rotating_v / 2
     else:
         polygon1.delete_fixed_point(hash(polygon2))
     # 修正位置

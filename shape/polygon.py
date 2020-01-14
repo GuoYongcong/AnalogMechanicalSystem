@@ -50,10 +50,11 @@ class Polygon:
     def draw_force(self, color):
         for f in self.forces:
             f.draw(color)
-        fixed_point = self.get_center()
-        for p in self.fixed_points.values():
-            fixed_point = p
-        pg.draw.line(self.surface,pg.Color('red'),(0,0),fixed_point,5)
+        # fixed_point = self.get_center()
+        # for p in self.fixed_points.values():
+        #     if p[1] > fixed_point[1]:
+        #         fixed_point = p
+        # pg.draw.line(self.surface,pg.Color('red'),(0,0),fixed_point,5)
 
     def is_hit_the_edge(self, size):
         # TODO
@@ -75,7 +76,8 @@ class Polygon:
             # fixed_point = math_utils.times(fixed_point, 1/2)
             fixed_point = self.get_center()
             for p in self.fixed_points.values():
-                fixed_point = p
+                if p[1] > fixed_point[1]:
+                    fixed_point = p
 
             ra = 0
             max_ra = 0
@@ -101,7 +103,6 @@ class Polygon:
             self.rotating_a = max_ra
             self.rotating_v += self.rotating_a
             self.rad += math.radians(self.rotating_v)
-            pg.draw.line(self.surface, pg.Color('red'),fp, fp,5)
             for i in range(len(self.points)):
                 self.points[i] = math_utils.rotate_point_in_pygame(fp, self.points[i], self.rotating_v)
             pg.draw.polygon(
