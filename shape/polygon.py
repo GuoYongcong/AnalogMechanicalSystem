@@ -17,6 +17,7 @@ class Polygon:
         self.forces = []
         self.rotating_a = 0
         self.rotating_v = 0
+        self.fixed_points = {}  # 旋转中心
         self.rad = 0
         self.is_free = is_free
 
@@ -49,6 +50,10 @@ class Polygon:
     def draw_force(self, color):
         for f in self.forces:
             f.draw(color)
+        fixed_point = self.get_center()
+        for p in self.fixed_points.values():
+            fixed_point = p
+        pg.draw.line(self.surface,pg.Color('red'),(0,0),fixed_point,5)
 
     def is_hit_the_edge(self, size):
         # TODO
@@ -68,29 +73,31 @@ class Polygon:
         if len(self.points) == 4:
             # fixed_point = math_utils.add_op(self.points[0], self.points[3])
             # fixed_point = math_utils.times(fixed_point, 1/2)
-            fixed_points = self.points[0], self.points[1]
+            fixed_point = self.get_center()
+            for p in self.fixed_points.values():
+                fixed_point = p
+
             ra = 0
             max_ra = 0
             fp = self.get_center()
-            for fixed_point in fixed_points:
-                width = math_utils.distance_of_two_points(self.points[0], self.points[1])
-                height = math_utils.distance_of_two_points(self.points[1], self.points[2])
-                i = self.m * (width**2 + height**2) / 3  # 转动惯量
-                d = math_utils.distance_of_two_points(self.get_center(), fixed_point)  # 力臂
-                f = self.m * gs.g   # 力的大小
-                sin = math.sin(math.radians(90) - self.rad)
-                M = d * f * sin     # 力矩
-                ra = M / i
-                for force in self.forces:
-                    d = math_utils.distance_of_two_points(force.get_pos(), fixed_point)
-                    degrees = force.get_angle()
-                    f = force.get_value()
-                    sin = math.sin(math.radians(degrees) - self.rad)
-                    M = d * f * sin
-                    ra += M / i
-                if ra > max_ra:
-                    max_ra = ra
-                    fp = fixed_point
+            width = math_utils.distance_of_two_points(self.points[0], self.points[1])
+            height = math_utils.distance_of_two_points(self.points[1], self.points[2])
+            i = self.m * (width**2 + height**2) / 3  # 转动惯量
+            d = math_utils.distance_of_two_points(self.get_center(), fixed_point)  # 力臂
+            f = self.m * gs.g   # 力的大小
+            sin = math.sin(math.radians(90) - self.rad)
+            M = d * f * sin     # 力矩
+            ra = M / i
+            for force in self.forces:
+                d = math_utils.distance_of_two_points(force.get_pos(), fixed_point)
+                degrees = force.get_angle()
+                f = force.get_value()
+                sin = math.sin(math.radians(degrees) - self.rad)
+                M = d * f * sin
+                ra += M / i
+            if math.fabs(ra) > max_ra:
+                max_ra = ra
+                fp = fixed_point
             self.rotating_a = max_ra
             self.rotating_v += self.rotating_a
             self.rad += math.radians(self.rotating_v)
@@ -104,3 +111,9 @@ class Polygon:
                 new_pos = math_utils.rotate_point_in_pygame(fp, force.get_pos(), self.rotating_v)
                 force.set_pos(new_pos[0], new_pos[1])
 
+    def append_fixed_point(self, key, fixed_point):
+        self.fixed_points[key] = fixed_point
+
+    def delete_fixed_point(self, key):
+        if self.fixed_points.get(key):
+            self.fixed_points.pop(key)

@@ -159,23 +159,31 @@ def ball_contact_polygon(ball, polygon):
 
 
 def polygon_contact_polygon(polygon1, polygon2):
-
+    max_d = 0
+    vector = 0, 0
+    fixed_point = None
     for point in polygon1.points:
         if math_utils.point_in_polygon(polygon2.points, point) is True:
             closest_point, min_d, closest_border = get_closest_point(
                 polygon2, point)
-            if min_d > 0:
-                for i in range(len(polygon1.points)):
-                    dy = closest_border[0][1] - closest_border[1][1]
-                    dx = closest_border[0][0] - closest_border[1][0]
-                    angle = math.degrees(math.atan2(dy, dx))  # 斜面角度
-                    degrees = -90 + angle
-                    rad = math.radians(degrees)
-                    polygon1.points[i] = math_utils.add_op(
-                        polygon1.points[i], (closest_point * math.cos(rad), closest_point * math.sin(rad)))
-            return True
+            if min_d >= max_d:
+                max_d = min_d
+                fixed_point = point
+                vector = math_utils.sub_op(closest_point, point)
 
     for point in polygon2.points:
         if math_utils.point_in_polygon(polygon1.points, point) is True:
-            return True
-    return False
+            closest_point, min_d, closest_border = get_closest_point(
+                polygon1, point)
+            if min_d > max_d:
+                max_d = min_d
+                fixed_point = point
+                vector = math_utils.sub_op(point, closest_point)
+    if fixed_point is not None:
+        polygon1.append_fixed_point(hash(polygon2), fixed_point)
+    else:
+        polygon1.delete_fixed_point(hash(polygon2))
+    # 修正位置
+    for i in range(len(polygon1.points)):
+        polygon1.points[i] = math_utils.add_op(
+            polygon1.points[i], vector)
