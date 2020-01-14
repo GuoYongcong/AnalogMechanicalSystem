@@ -36,7 +36,7 @@ def dy_two_points(p1, p2, s):
     return ds * math.fabs(p1[1] - p2[1]) / s
 
 
-def  get_closest_point(polygon, point):
+def get_closest_point(polygon, point):
     closest_point = None  # 多边形边上垂直距离点point最近的点中，直线距离最近的点
     min_d = gs.MAX_VALUE  # closest_point垂直距离点point的距离
     closest_border = []
@@ -162,25 +162,20 @@ def polygon_contact_polygon(polygon1, polygon2):
 
     for point in polygon1.points:
         if math_utils.point_in_polygon(polygon2.points, point) is True:
-            closest_point, min_d, closest_border = get_closest_point(polygon2, point)
+            closest_point, min_d, closest_border = get_closest_point(
+                polygon2, point)
             if min_d > 0:
-                for p in polygon1.points:
+                for i in range(len(polygon1.points)):
                     dy = closest_border[0][1] - closest_border[1][1]
                     dx = closest_border[0][0] - closest_border[1][0]
                     angle = math.degrees(math.atan2(dy, dx))  # 斜面角度
                     degrees = -90 + angle
-
-                    closest_point_to_ball_pos = math_utils.sub_op(
-                        p, closest_point)
-                    pos_to_new_pos = math_utils.times(
-                        closest_point_to_ball_pos,
-                        (ball.r - min_d) / min_d)
-                    new_pos = math_utils.add_op(pos_to_new_pos, ball.pos)
-                    ball.pos = (new_pos[0]), (new_pos[1])
+                    rad = math.radians(degrees)
+                    polygon1.points[i] = math_utils.add_op(
+                        polygon1.points[i], (closest_point * math.cos(rad), closest_point * math.sin(rad)))
             return True
 
     for point in polygon2.points:
         if math_utils.point_in_polygon(polygon1.points, point) is True:
             return True
     return False
-
